@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
-    private static final String[] MENU_ITEM = {"start", "Options"};
-
     public static final int TILE_SIZE = 50;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
     private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
@@ -30,7 +28,6 @@ public class Main extends Application {
     private static final int X_TILES = 15;
     private static final int Y_TILES = 15;
 
-    private Stage game_stage;
     private Stage primaryStage;
     private Scene game_scene;
     private Scene menu_scene;
