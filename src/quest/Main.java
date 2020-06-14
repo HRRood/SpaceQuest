@@ -30,7 +30,6 @@ public class Main extends Application {
     private static final int X_TILES = 15;
     private static final int Y_TILES = 15;
 
-    private Stage game_stage;
     private Stage primaryStage;
     private Scene game_scene;
     private Scene menu_scene;

@@ -46,7 +46,6 @@ public class Tile {
     }
 
     public void updatePlayer () {
-        System.out.println(user + " X: " + position_x + " Y: " + position_y);
         if (user == null) {
             this.pane.getChildren().remove(playerview);
             return;
