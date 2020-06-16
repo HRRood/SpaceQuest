@@ -2,9 +2,9 @@ package quest;
 
 import javafx.scene.image.Image;
 
-public class Character extends Object {
+public class MovableObject extends Object {
     private String direction;
-    public Character(Image sprite, Tile tile, String direction) {
+    public MovableObject(Image sprite, Tile tile, String direction) {
         super(sprite, tile);
         this.direction = direction;
     }

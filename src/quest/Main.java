@@ -80,6 +80,7 @@ public class Main extends Application {
                     user_tile.setUser(null);
                     neighbours.get(0).setUser(user);
                     user.setTile(neighbours.get(0));
+                    updateGame();
                 }
                 break;
             }
@@ -88,6 +89,7 @@ public class Main extends Application {
                     user_tile.setUser(null);
                     neighbours.get(1).setUser(user);
                     user.setTile(neighbours.get(1));
+                    updateGame();
                 }
                 break;
             }
@@ -96,6 +98,7 @@ public class Main extends Application {
                     user_tile.setUser(null);
                     neighbours.get(2).setUser(user);
                     user.setTile(neighbours.get(2));
+                    updateGame();
                 }
                 break;
             }
@@ -104,11 +107,11 @@ public class Main extends Application {
                     user_tile.setUser(null);
                     neighbours.get(3).setUser(user);
                     user.setTile(neighbours.get(3));
+                    updateGame();
                 }
                 break;
             }
         }
-        updateGame();
     }
 
     private void addHandlers() {
