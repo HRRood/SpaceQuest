@@ -7,21 +7,26 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
-    public static final int TILE_SIZE = 50;
+    public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
     private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
 
@@ -35,8 +40,11 @@ public class Main extends Application {
     private Pane game;
     private StackPane menu;
     private Tile[][] grid = new Tile[X_TILES][Y_TILES];
+    private Label score_text;
 
     private User user;
+
+    private Integer score = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -48,9 +56,16 @@ public class Main extends Application {
     }
 
     private Parent createGame() {
+        StackPane root = new StackPane();
+        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game = new Pane();
         game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        game.relocate(SCREEN_WIDTH * 0.3, SCREEN_HEIGHT * 0.1);
+
+        String player_score = "Score: " + score;
+        score_text = new Label(player_score);
+        score_text.setFont(new Font(38));
+        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
+
         Image tile_background = new Image (new File("src/quest/space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
@@ -69,7 +84,9 @@ public class Main extends Application {
         user = new User(new Image (new File("src/quest/spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
         updateGame();
-        return game;
+
+        root.getChildren().addAll(game, score_text);
+        return root;
     }
 
     private Parent createMenu () {
@@ -115,6 +132,9 @@ public class Main extends Application {
                 game.getChildren().add(grid[x][y].getPane());
             }
         }
+        int game_size = TILE_SIZE * X_TILES;
+        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
+        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
     }
 
     private List<Tile> getNeighbours (Tile tile) {
