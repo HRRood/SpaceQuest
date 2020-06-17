@@ -66,79 +66,9 @@ public class Main extends Application {
         }
 
         user = new User(new Image (new File("src/quest/spaceship.png").toURI().toString()), grid[0][0], "up");
-        grid[0][0].setUser(user);
+        grid[0][0].setObject(user);
         updateGame();
         return game;
-    }
-
-    private void movePlayer(String move_to) {
-        Tile user_tile = user.getTile();
-        List<Tile> neighbours = user_tile.getNeighbours();
-        switch (move_to) {
-            case "up": {
-                if (neighbours.get(0).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(0).setUser(user);
-                    user.setTile(neighbours.get(0));
-                    updateGame();
-                }
-                break;
-            }
-            case "left": {
-                if (neighbours.get(1).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(1).setUser(user);
-                    user.setTile(neighbours.get(1));
-                    updateGame();
-                }
-                break;
-            }
-            case "right": {
-                if (neighbours.get(2).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(2).setUser(user);
-                    user.setTile(neighbours.get(2));
-                    updateGame();
-                }
-                break;
-            }
-            case "down": {
-                if (neighbours.get(3).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(3).setUser(user);
-                    user.setTile(neighbours.get(3));
-                    updateGame();
-                }
-                break;
-            }
-        }
-    }
-
-    private void addHandlers() {
-        game_scene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case UP: {
-                    user.setDirection("up");
-                    movePlayer("up");
-                    break;
-                }
-                case DOWN: {
-                    user.setDirection("down");
-                    movePlayer("down");
-                    break;
-                }
-                case LEFT: {
-                    user.setDirection("left");
-                    movePlayer("left");
-                    break;
-                }
-                case RIGHT: {
-                    user.setDirection("right");
-                    movePlayer("right");
-                    break;
-                }
-            }
-        });
     }
 
     private Parent createMenu () {
@@ -167,10 +97,18 @@ public class Main extends Application {
         return menu;
     }
 
-    private void updateGame() {
+    private void addHandlers() {
+        game_scene.setOnKeyPressed(event -> {
+            user.handleKeyPressed(event.getCode());
+            updateGame();
+        });
+    }
+
+    public void updateGame() {
         if (!game.getChildren().isEmpty()) {
             game.getChildren().clear();
         }
+
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
                 game.getChildren().add(grid[x][y].getPane());
