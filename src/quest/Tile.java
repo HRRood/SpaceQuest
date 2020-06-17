@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Tile {
     private int position_x;
     private int position_y;
     private boolean isAvailable = true;
+    private Image background;
 
     private List<Tile> neighbours;
 
@@ -20,12 +22,13 @@ public class Tile {
     private ImageView objectview;
 
     private StackPane pane = new StackPane();
-    private Rectangle rect = new Rectangle(Main.TILE_SIZE -1, Main.TILE_SIZE - 1);
+    private Rectangle rect = new Rectangle(Main.TILE_SIZE+1, Main.TILE_SIZE+1);
 
 
-    public Tile(int x, int y) {
+    public Tile(int x, int y, Image background) {
         this.position_x = x;
         this.position_y = y;
+        this.background = background;
 
         if (position_x == -1 || position_y == -1) {
             isAvailable = false;
@@ -34,8 +37,11 @@ public class Tile {
     }
 
     private void creatTile(){
-        rect.setFill(Color.BLUEVIOLET);
-        rect.setStroke(Color.LIGHTGRAY);
+        if(this.position_y < 0 && this.position_x < 0) {
+            return;
+        }
+        rect.setFill(new ImagePattern(this.background));
+        rect.setStroke(Color.TRANSPARENT);
         rect.setTranslateX(position_x * Main.TILE_SIZE);
         rect.setTranslateY(position_y * Main.TILE_SIZE);
         this.pane.getChildren().add(rect);
@@ -47,7 +53,6 @@ public class Tile {
     }
 
     public void updateObject () {
-        System.out.println(getPosition_x() + ", " + getPosition_y() + ": " + object);
         this.pane.getChildren().remove(objectview);
         if (object == null) {
             return;

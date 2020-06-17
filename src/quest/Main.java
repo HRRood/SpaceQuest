@@ -51,10 +51,11 @@ public class Main extends Application {
         game = new Pane();
         game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game.relocate(SCREEN_WIDTH * 0.3, SCREEN_HEIGHT * 0.1);
+        Image tile_background = new Image (new File("src/quest/space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
-                Tile tile = new Tile(x, y);
+                Tile tile = new Tile(x, y, tile_background);
                 grid[x][y] = tile;
             }
         }
@@ -118,7 +119,7 @@ public class Main extends Application {
 
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
-        Tile emptyTile = new Tile(-1, -1);
+        Tile emptyTile = new Tile(-1, -1, null);
 
         int[] points = new int[] {
                 0, -1, -1, 0, 1, 0, 0, 1
