@@ -1,6 +1,7 @@
 package quest;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,8 +23,11 @@ import javafx.stage.Stage;
 import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
     public static final int TILE_SIZE = 60;
@@ -44,7 +48,7 @@ public class Main extends Application {
 
     private User user;
 
-    private Integer score = 0;
+    private Integer score = -1;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -116,6 +120,19 @@ public class Main extends Application {
     }
 
     private void addHandlers() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        score++;
+                        updateGame();
+                    }
+                });
+            }
+        }, 0, 1000);
         game_scene.setOnKeyPressed(event -> {
             user.handleKeyPressed(event.getCode());
             updateGame();
@@ -135,6 +152,8 @@ public class Main extends Application {
         int game_size = TILE_SIZE * X_TILES;
         game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
         game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+        String text = "Score: " + score;
+        score_text.setText(text);
     }
 
     private List<Tile> getNeighbours (Tile tile) {
