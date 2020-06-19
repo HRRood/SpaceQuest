@@ -30,6 +30,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main extends Application {
+
+    String resources = "src/quest/Resources/";
+
     public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
     private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
@@ -50,6 +53,8 @@ public class Main extends Application {
 
     private Integer score = -1;
 
+    private Comet[] comets = new Comet[5];
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         menu_scene = new Scene(createMenu());
@@ -59,40 +64,7 @@ public class Main extends Application {
         this.primaryStage.show();
     }
 
-    private Parent createGame() {
-        StackPane root = new StackPane();
-        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        game = new Pane();
-        game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        String player_score = "Score: " + score;
-        score_text = new Label(player_score);
-        score_text.setFont(new Font(38));
-        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
-
-        Image tile_background = new Image (new File("src/quest/space-background.png").toURI().toString());
-
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                Tile tile = new Tile(x, y, tile_background);
-                grid[x][y] = tile;
-            }
-        }
-
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                grid[x][y].setNeighbours(getNeighbours(grid[x][y]));
-            }
-        }
-
-        user = new User(new Image (new File("src/quest/spaceship.png").toURI().toString()), grid[0][0], "up");
-        grid[0][0].setObject(user);
-        updateGame();
-
-        root.getChildren().addAll(game, score_text);
-        return root;
-    }
-
+    //creates the menu.
     private Parent createMenu () {
         menu = new StackPane();
         menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -119,6 +91,54 @@ public class Main extends Application {
         return menu;
     }
 
+    //creates the game, includes creating the board with tiles, meteorites & the player.
+    private Parent createGame() {
+        StackPane root = new StackPane();
+        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        game = new Pane();
+        game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        String player_score = "Score: " + score;
+        score_text = new Label(player_score);
+        score_text.setFont(new Font(38));
+        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
+
+        Image tile_background = new Image (new File(resources + "space-background.png").toURI().toString());
+
+        for (int y = 0; y < Y_TILES; y++) {
+            for (int x = 0; x < X_TILES; x++) {
+                Tile tile = new Tile(x, y, tile_background);
+                grid[x][y] = tile;
+            }
+        }
+
+        for (int y = 0; y < Y_TILES; y++) {
+            for (int x = 0; x < X_TILES; x++) {
+                grid[x][y].setNeighbours(getNeighbours(grid[x][y]));
+            }
+        }
+
+        user = new User(new Image (new File(resources + "spaceship.png").toURI().toString()), grid[0][0], "up");
+        grid[0][0].setObject(user);
+
+        updateGame();
+
+        //creating Comets.
+        for(int i = 0; i < comets.length; i++)
+        {
+            int posX = getRandom(1,X_TILES -1);
+            int posY = getRandom(1,Y_TILES -1);
+            Comet comet = new Comet(new Image (new File(resources + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            grid[posX][posY].setObject(comet);
+            comets[i] = comet;
+            System.out.println("Comet: " + i + " - pos: " + posX + ":" + posY);
+        }
+
+        root.getChildren().addAll(game, score_text);
+        return root;
+    }
+
+    //add an timer & set an input handler.
     private void addHandlers() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -129,6 +149,7 @@ public class Main extends Application {
                     public void run() {
                         score++;
                         updateGame();
+                        LateUpdate();
                     }
                 });
             }
@@ -139,23 +160,7 @@ public class Main extends Application {
         });
     }
 
-    public void updateGame() {
-        if (!game.getChildren().isEmpty()) {
-            game.getChildren().clear();
-        }
-
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                game.getChildren().add(grid[x][y].getPane());
-            }
-        }
-        int game_size = TILE_SIZE * X_TILES;
-        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
-        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
-        String text = "Score: " + score;
-        score_text.setText(text);
-    }
-
+    //get the neighbours of the parameter tile.
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
         Tile emptyTile = new Tile(-1, -1, null);
@@ -181,6 +186,39 @@ public class Main extends Application {
         return neighbors;
     }
 
+    //get a random number between a min & a max.
+    private int getRandom(int min, int max)
+    {
+        int temp = (int)(Math.random() * (max - min + 1) + min);
+        return temp;
+    }
+
+    //update & Render
+    public void updateGame() {
+        if (!game.getChildren().isEmpty()) {
+            game.getChildren().clear();
+        }
+
+        for (int y = 0; y < Y_TILES; y++) {
+            for (int x = 0; x < X_TILES; x++) {
+                game.getChildren().add(grid[x][y].getPane());
+            }
+        }
+        int game_size = TILE_SIZE * X_TILES;
+        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
+        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+        String text = "Score: " + score;
+        score_text.setText(text);
+    }
+
+    //Update Object that update time based.
+    public void LateUpdate()
+    {
+        //update comets.
+        for (Comet c :  comets) {
+            c.Update();
+        }
+    }
 
     public static void main(String[] args) {
         launch(args);

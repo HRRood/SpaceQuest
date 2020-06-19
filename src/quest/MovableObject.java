@@ -13,6 +13,10 @@ public class MovableObject extends Object {
         this.direction = direction;
     }
 
+    public MovableObject(Image sprite, Tile tile) {
+        super(sprite, tile);
+    }
+
     public void setDirection(String direction) {
         this.direction = direction;
     }
@@ -39,26 +43,51 @@ public class MovableObject extends Object {
 
     public void handleKeyPressed (KeyCode code) {
         switch (code) {
+            case W:
             case UP: {
                 setDirection("up");
                 moveObject("up");
                 break;
             }
+            case S:
             case DOWN: {
                 setDirection("down");
                 moveObject("down");
                 break;
             }
+            case A:
             case LEFT: {
                 setDirection("left");
                 moveObject("left");
                 break;
             }
+            case D:
             case RIGHT: {
                 setDirection("right");
                 moveObject("right");
                 break;
             }
+        }
+    }
+
+    public void setMove(int dir)
+    {
+        switch(dir)
+        {
+            case 1: //up
+                moveObject("up");
+                break;
+            case 2: //down
+                moveObject("down");
+                break;
+            case 3: //left.
+                moveObject("left");
+                break;
+            case 4: //right
+                moveObject("right");
+                break;
+            default:
+                break;
         }
     }
 
