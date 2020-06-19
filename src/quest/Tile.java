@@ -91,5 +91,13 @@ public class Tile {
 
     public void setObject(Object object) {
         this.object = object;
+        isAvailable = false;
     }
+
+    public void emptyTile()
+    {
+        this.object = null;
+        isAvailable = true;
+    }
+
 }

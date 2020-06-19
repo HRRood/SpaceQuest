@@ -13,6 +13,10 @@ public class MovableObject extends Object {
         this.direction = direction;
     }
 
+    public MovableObject(Image sprite, Tile tile) {
+        super(sprite, tile);
+    }
+
     public void setDirection(String direction) {
         this.direction = direction;
     }
@@ -39,26 +43,51 @@ public class MovableObject extends Object {
 
     public void handleKeyPressed (KeyCode code) {
         switch (code) {
+            case W:
             case UP: {
                 setDirection("up");
                 moveObject("up");
                 break;
             }
+            case S:
             case DOWN: {
                 setDirection("down");
                 moveObject("down");
                 break;
             }
+            case A:
             case LEFT: {
                 setDirection("left");
                 moveObject("left");
                 break;
             }
+            case D:
             case RIGHT: {
                 setDirection("right");
                 moveObject("right");
                 break;
             }
+        }
+    }
+
+    public void setMove(int dir)
+    {
+        switch(dir)
+        {
+            case 1: //up
+                moveObject("up");
+                break;
+            case 2: //down
+                moveObject("down");
+                break;
+            case 3: //left.
+                moveObject("left");
+                break;
+            case 4: //right
+                moveObject("right");
+                break;
+            default:
+                break;
         }
     }
 
@@ -71,7 +100,7 @@ public class MovableObject extends Object {
         switch (move_to) {
             case "up": {
                 if (neighbours.get(0).isAvailable()) {
-                    object_tile.setObject(null);
+                    object_tile.emptyTile();
                     neighbours.get(0).setObject(this);
                     setTile(neighbours.get(0));
                 }
@@ -79,7 +108,7 @@ public class MovableObject extends Object {
             }
             case "left": {
                 if (neighbours.get(1).isAvailable()) {
-                    object_tile.setObject(null);
+                    object_tile.emptyTile();
                     neighbours.get(1).setObject(this);
                     setTile(neighbours.get(1));
                 }
@@ -87,7 +116,7 @@ public class MovableObject extends Object {
             }
             case "right": {
                 if (neighbours.get(2).isAvailable()) {
-                    object_tile.setObject(null);
+                    object_tile.emptyTile();
                     neighbours.get(2).setObject(this);
                     setTile(neighbours.get(2));
                 }
@@ -95,7 +124,7 @@ public class MovableObject extends Object {
             }
             case "down": {
                 if (neighbours.get(3).isAvailable()) {
-                    object_tile.setObject(null);
+                    object_tile.emptyTile();
                     neighbours.get(3).setObject(this);
                     setTile(neighbours.get(3));
                 }
