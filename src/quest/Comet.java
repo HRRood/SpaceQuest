@@ -3,6 +3,7 @@ package quest;
 import javafx.scene.image.Image;
 
 public class Comet extends MovableObject {
+    String[] POSITION = {"up", "left", "right", "down"};
     public Comet(Image sprite, Tile tile) {
         super(sprite, tile);
     }
@@ -12,17 +13,19 @@ public class Comet extends MovableObject {
     {
 
         //get random location.
-        int newPos = getRandom(1,4);
+        int newPos = getRandom();
+        while (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
+            newPos = getRandom();
+        }
 
         //move
-        setMove(newPos);
+        moveObject(POSITION[newPos]);
 
     }
 
-    private int getRandom(int min, int max)
+    private int getRandom()
     {
-        int temp = (int)(Math.random() * (max - min + 1) + min);
-        return temp;
+        return (int)(Math.random() * (3 + 1) + 0);
     }
 
 }
