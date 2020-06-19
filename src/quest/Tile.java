@@ -16,8 +16,7 @@ public class Tile {
     private List<Tile> neighbours;
 
     private User user;
-    private Object object;
-    private ImageView objectview;
+    private ImageView playerview;
 
     private StackPane pane = new StackPane();
     private Rectangle rect = new Rectangle(Main.TILE_SIZE -1, Main.TILE_SIZE - 1);
@@ -42,25 +41,23 @@ public class Tile {
     }
 
     public StackPane getPane() {
-        updateObject();
+        updatePlayer();
         return pane;
     }
 
-    public void updateObject () {
-        this.pane.getChildren().remove(objectview);
-        if (object == null) {
+    public void updatePlayer () {
+        if (user == null) {
+            this.pane.getChildren().remove(playerview);
             return;
         }
 
-        objectview = new ImageView(object.getSprite());
-        objectview.setFitWidth(Main.TILE_SIZE * 0.8);
-        objectview.setFitHeight(Main.TILE_SIZE * 0.8);
-        objectview.setTranslateX(position_x * Main.TILE_SIZE);
-        objectview.setTranslateY(position_y * Main.TILE_SIZE);
-        if (object instanceof MovableObject) {
-            objectview.setRotate(((MovableObject) object).getDirection());
-        }
-        this.pane.getChildren().add(objectview);
+        playerview = new ImageView(user.getSprite());
+        playerview.setFitWidth(Main.TILE_SIZE * 0.8);
+        playerview.setFitHeight(Main.TILE_SIZE * 0.8);
+        playerview.setTranslateX(position_x * Main.TILE_SIZE);
+        playerview.setTranslateY(position_y * Main.TILE_SIZE);
+        playerview.setRotate(user.getDirection());
+        this.pane.getChildren().add(playerview);
     }
 
     public void setNeighbours(List<Tile> neighbours) {
@@ -83,7 +80,7 @@ public class Tile {
         return isAvailable;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
