@@ -8,7 +8,7 @@ public class Comet extends MovableObject {
     }
 
     //updating Comet
-    public void Update()
+    public void update()
     {
 
         //get random location.

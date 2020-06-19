@@ -136,6 +136,5 @@ public class MovableObject extends Object {
                 break;
             }
         }
-
     }
 }

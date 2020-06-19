@@ -126,12 +126,11 @@ public class Main extends Application {
         //creating Comets.
         for(int i = 0; i < comets.length; i++)
         {
-            int posX = getRandom(1,X_TILES -1);
-            int posY = getRandom(1,Y_TILES -1);
+            int posX = getRandom(1, X_TILES -1);
+            int posY = getRandom(1, Y_TILES -1);
             Comet comet = new Comet(new Image (new File(resources + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
-            System.out.println("Comet: " + i + " - pos: " + posX + ":" + posY);
         }
 
         root.getChildren().addAll(game, score_text);
@@ -149,7 +148,7 @@ public class Main extends Application {
                     public void run() {
                         score++;
                         updateGame();
-                        LateUpdate();
+                        lateUpdate();
                     }
                 });
             }
@@ -212,11 +211,11 @@ public class Main extends Application {
     }
 
     //Update Object that update time based.
-    public void LateUpdate()
+    public void lateUpdate()
     {
         //update comets.
         for (Comet c :  comets) {
-            c.Update();
+            c.update();
         }
     }
 
