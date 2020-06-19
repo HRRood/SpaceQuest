@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
@@ -12,19 +13,22 @@ public class Tile {
     private int position_x;
     private int position_y;
     private boolean isAvailable = true;
+    private Image background;
 
     private List<Tile> neighbours;
 
     private User user;
-    private ImageView playerview;
+    private Object object;
+    private ImageView objectview;
 
     private StackPane pane = new StackPane();
-    private Rectangle rect = new Rectangle(Main.TILE_SIZE -1, Main.TILE_SIZE - 1);
+    private Rectangle rect = new Rectangle(Main.TILE_SIZE+1, Main.TILE_SIZE+1);
 
 
-    public Tile(int x, int y) {
+    public Tile(int x, int y, Image background) {
         this.position_x = x;
         this.position_y = y;
+        this.background = background;
 
         if (position_x == -1 || position_y == -1) {
             isAvailable = false;
@@ -33,31 +37,36 @@ public class Tile {
     }
 
     private void creatTile(){
-        rect.setFill(Color.BLUEVIOLET);
-        rect.setStroke(Color.LIGHTGRAY);
+        if(this.position_y < 0 && this.position_x < 0) {
+            return;
+        }
+        rect.setFill(new ImagePattern(this.background));
+        rect.setStroke(Color.TRANSPARENT);
         rect.setTranslateX(position_x * Main.TILE_SIZE);
         rect.setTranslateY(position_y * Main.TILE_SIZE);
         this.pane.getChildren().add(rect);
     }
 
     public StackPane getPane() {
-        updatePlayer();
+        updateObject();
         return pane;
     }
 
-    public void updatePlayer () {
-        if (user == null) {
-            this.pane.getChildren().remove(playerview);
+    public void updateObject () {
+        this.pane.getChildren().remove(objectview);
+        if (object == null) {
             return;
         }
 
-        playerview = new ImageView(user.getSprite());
-        playerview.setFitWidth(Main.TILE_SIZE * 0.8);
-        playerview.setFitHeight(Main.TILE_SIZE * 0.8);
-        playerview.setTranslateX(position_x * Main.TILE_SIZE);
-        playerview.setTranslateY(position_y * Main.TILE_SIZE);
-        playerview.setRotate(user.getDirection());
-        this.pane.getChildren().add(playerview);
+        objectview = new ImageView(object.getSprite());
+        objectview.setFitWidth(Main.TILE_SIZE * 0.8);
+        objectview.setFitHeight(Main.TILE_SIZE * 0.8);
+        objectview.setTranslateX(position_x * Main.TILE_SIZE);
+        objectview.setTranslateY(position_y * Main.TILE_SIZE);
+        if (object instanceof MovableObject) {
+            objectview.setRotate(((MovableObject) object).getDirection());
+        }
+        this.pane.getChildren().add(objectview);
     }
 
     public void setNeighbours(List<Tile> neighbours) {
@@ -80,7 +89,7 @@ public class Tile {
         return isAvailable;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setObject(Object object) {
+        this.object = object;
     }
 }

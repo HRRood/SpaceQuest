@@ -1,27 +1,36 @@
 package quest;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
-    public static final int TILE_SIZE = 50;
+    public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
     private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
 
@@ -35,8 +44,11 @@ public class Main extends Application {
     private Pane game;
     private StackPane menu;
     private Tile[][] grid = new Tile[X_TILES][Y_TILES];
+    private Label score_text;
 
     private User user;
+
+    private Integer score = -1;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -48,13 +60,21 @@ public class Main extends Application {
     }
 
     private Parent createGame() {
+        StackPane root = new StackPane();
+        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game = new Pane();
         game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        game.relocate(SCREEN_WIDTH * 0.3, SCREEN_HEIGHT * 0.1);
+
+        String player_score = "Score: " + score;
+        score_text = new Label(player_score);
+        score_text.setFont(new Font(38));
+        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
+
+        Image tile_background = new Image (new File("src/quest/space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
-                Tile tile = new Tile(x, y);
+                Tile tile = new Tile(x, y, tile_background);
                 grid[x][y] = tile;
             }
         }
@@ -66,79 +86,11 @@ public class Main extends Application {
         }
 
         user = new User(new Image (new File("src/quest/spaceship.png").toURI().toString()), grid[0][0], "up");
-        grid[0][0].setUser(user);
+        grid[0][0].setObject(user);
         updateGame();
-        return game;
-    }
 
-    private void movePlayer(String move_to) {
-        Tile user_tile = user.getTile();
-        List<Tile> neighbours = user_tile.getNeighbours();
-        switch (move_to) {
-            case "up": {
-                if (neighbours.get(0).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(0).setUser(user);
-                    user.setTile(neighbours.get(0));
-                    updateGame();
-                }
-                break;
-            }
-            case "left": {
-                if (neighbours.get(1).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(1).setUser(user);
-                    user.setTile(neighbours.get(1));
-                    updateGame();
-                }
-                break;
-            }
-            case "right": {
-                if (neighbours.get(2).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(2).setUser(user);
-                    user.setTile(neighbours.get(2));
-                    updateGame();
-                }
-                break;
-            }
-            case "down": {
-                if (neighbours.get(3).isAvailable()) {
-                    user_tile.setUser(null);
-                    neighbours.get(3).setUser(user);
-                    user.setTile(neighbours.get(3));
-                    updateGame();
-                }
-                break;
-            }
-        }
-    }
-
-    private void addHandlers() {
-        game_scene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case UP: {
-                    user.setDirection("up");
-                    movePlayer("up");
-                    break;
-                }
-                case DOWN: {
-                    user.setDirection("down");
-                    movePlayer("down");
-                    break;
-                }
-                case LEFT: {
-                    user.setDirection("left");
-                    movePlayer("left");
-                    break;
-                }
-                case RIGHT: {
-                    user.setDirection("right");
-                    movePlayer("right");
-                    break;
-                }
-            }
-        });
+        root.getChildren().addAll(game, score_text);
+        return root;
     }
 
     private Parent createMenu () {
@@ -167,20 +119,46 @@ public class Main extends Application {
         return menu;
     }
 
-    private void updateGame() {
+    private void addHandlers() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        score++;
+                        updateGame();
+                    }
+                });
+            }
+        }, 0, 1000);
+        game_scene.setOnKeyPressed(event -> {
+            user.handleKeyPressed(event.getCode());
+            updateGame();
+        });
+    }
+
+    public void updateGame() {
         if (!game.getChildren().isEmpty()) {
             game.getChildren().clear();
         }
+
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
                 game.getChildren().add(grid[x][y].getPane());
             }
         }
+        int game_size = TILE_SIZE * X_TILES;
+        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
+        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+        String text = "Score: " + score;
+        score_text.setText(text);
     }
 
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
-        Tile emptyTile = new Tile(-1, -1);
+        Tile emptyTile = new Tile(-1, -1, null);
 
         int[] points = new int[] {
                 0, -1, -1, 0, 1, 0, 0, 1
