@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -51,7 +52,7 @@ public class Main extends Application {
     private Planet[] planets;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         menu_scene = new Scene(createMenu());
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Space Quest");
@@ -59,31 +60,50 @@ public class Main extends Application {
         this.primaryStage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        this.exitApplication();
+    }
+
     //creates the menu.
     private Parent createMenu () {
-        menu = new StackPane();
-        menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.menu = new StackPane();
+        this.menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        VBox vbButtons = new VBox();
-        vbButtons.setSpacing(10);
-        vbButtons.setPadding(new Insets(0, 20, 10, 20));
-
-        Button start = new Button("Start Game");
-        start.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        start.setOnAction((event) -> {
-            game_scene = new Scene(createGame());
-            addHandlers();
-            primaryStage.setScene(game_scene);
+        Button start_button = new Button("Start Game");
+        start_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        start_button.setOnAction(event -> {
+            this.game_scene = new Scene(createGame());
+            this.addHandlers();
+            this.primaryStage.setScene(this.game_scene);
         });
 
-        Button options = new Button("Game Options");
-        options.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        vbButtons.getChildren().addAll(start, options);
+        Button options_button = new Button("Game Options");
+        options_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        options_button.setOnAction(event -> {
+            // TODO optionsButton
+        });
 
-        menu.getChildren().add(vbButtons);
-        vbButtons.setAlignment(Pos.CENTER);
-        menu.setStyle("-fx-background-color: darkgray;");;
-        return menu;
+        Button exit_button = new Button("Exit");
+        exit_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exit_button.setOnAction(event -> {
+            this.exitApplication();
+        });
+
+        VBox menu_buttons = new VBox();
+        menu_buttons.setSpacing(10);
+        menu_buttons.setPadding(new Insets(0, 20, 10, 20));
+        menu_buttons.getChildren().addAll(start_button, options_button, exit_button);
+        menu_buttons.setAlignment(Pos.CENTER);
+
+        this.menu.getChildren().add(menu_buttons);
+        this.menu.setBackground(
+                new Background(
+                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
+                )
+        );
+
+        return this.menu;
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
@@ -116,8 +136,6 @@ public class Main extends Application {
         user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
-        updateGame();
-
         //creating Comets.
         for(int i = 0; i < comets.length; i++)
         {
@@ -142,6 +160,9 @@ public class Main extends Application {
             planet_tile.setObject(planet);
         }
 
+        updateGame();
+
+
         root.getChildren().addAll(game, score_text);
         return root;
     }
@@ -156,8 +177,8 @@ public class Main extends Application {
                     @Override
                     public void run() {
                         score++;
-                        updateGame();
                         lateUpdate();
+                        updateGame();
                     }
                 });
             }
@@ -230,5 +251,11 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void exitApplication() {
+        // TODO ? save to filesystem
+
+        this.primaryStage.close();
     }
 }
