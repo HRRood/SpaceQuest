@@ -2,28 +2,50 @@ package quest;
 
 public class GameOptions {
 
-    private int tiles;
+    private int x_tiles;
+    private int y_tiles;
+    private int tile_size;
     private int planets;
     private int comets;
 
     public GameOptions() {
-        this.tiles = 12;
+        this.x_tiles = 12;
+        this.y_tiles = 12;
+        this.tile_size = 50;
         this.planets = 3;
         this.comets = 5;
     }
 
-    public GameOptions(int tiles, int planets, int comets) {
-        this.tiles = tiles;
+    public GameOptions(int x_tiles, int y_tiles, int tile_size, int planets, int comets) {
+        this.x_tiles = x_tiles;
+        this.y_tiles = y_tiles;
+        this.tile_size = tile_size;
         this.planets = planets;
         this.comets = comets;
     }
 
-    public int getTileCount() {
-        return this.tiles;
+    public int getXTileCount() {
+        return this.x_tiles;
     }
 
-    public void setTileCount(int tiles) {
-        this.tiles = tiles;
+    public void setXTileCount(int x_tiles) {
+        this.x_tiles = x_tiles;
+    }
+
+    public int getYTileCount() {
+        return this.y_tiles;
+    }
+
+    public void setYTileCount(int y_tiles) {
+        this.y_tiles = y_tiles;
+    }
+
+    public int getTileSize() {
+        return this.tile_size;
+    }
+
+    public void setTileSize(int tile_size) {
+        this.tile_size = tile_size;
     }
 
     public int getPlanetCount() {
@@ -41,5 +63,4 @@ public class GameOptions {
     public void setCometCount(int comets) {
         this.comets = comets;
     }
-
 }

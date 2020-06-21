@@ -35,33 +35,31 @@ public class Main extends Application {
     private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
 
     private GameOptions game_options;
-
     private Stage stage;
     private Scene game_scene;
     private Scene options_scene;
     private Scene menu_scene;
 
-
-    public static final int TILE_SIZE = 60;
-
-    private static final int X_TILES = 15;
-    private static final int Y_TILES = 15;
-
-    private Pane game;
-    private Tile[][] grid = new Tile[X_TILES][Y_TILES];
-    private Label score_text;
-
-    private User user;
-
-    private Integer score = -1;
-
-    private Comet[] comets = new Comet[this.game_options.getCometCount()];
-
+    private Tile[][] grid;
+    private Comet[] comets;
     private Planet[] planets;
 
+
+    public static final int TILE_SIZE = 60;
+    private Pane game;
+    private Label score_text;
+    private User user;
+    private Integer score = -1;
+
+
+
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         this.game_options = new GameOptions();
+
+        this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
+        this.comets = new Comet[this.game_options.getCometCount()];
+        this.planets = new Planet[this.game_options.getPlanetCount()];
 
         this.menu_scene = this.createMenuScene();
         this.options_scene = this.createOptionsScene();
@@ -74,8 +72,8 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
-        this.exitApplication();
+    public void stop() {
+        this.stage.close();
     }
 
     //creates the menu.
@@ -97,7 +95,7 @@ public class Main extends Application {
         Button exit_button = new Button("Exit");
         exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exit_button.setOnAction(event -> {
-            this.exitApplication();
+            this.stop();
         });
 
         VBox menu_buttons = new VBox();
@@ -107,15 +105,9 @@ public class Main extends Application {
         menu_buttons.setAlignment(Pos.CENTER);
 
         StackPane menu = new StackPane();
-        // menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         menu.getChildren().add(menu_buttons);
-        menu.setBackground(
-                new Background(
-                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
-                )
-        );
 
-        return new Scene(menu);
+        return new Scene(menu, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     private Scene createOptionsScene() {
@@ -124,11 +116,6 @@ public class Main extends Application {
 //        grid.setHgap(10);
 //        grid.setVgap(10);
 //        grid.setPadding(new Insets(25, 25, 25, 25));
-        grid.setBackground(
-                new Background(
-                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
-                )
-        );
 
         Text title = new Text("Game Options");
         title.setFont(Font.font("Determination", FontWeight.BOLD, 20));
@@ -137,6 +124,12 @@ public class Main extends Application {
         Button save_button = new Button("Save and go back");
         save_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         save_button.setOnAction(event -> {
+            this.game_options.setYTileCount(12);
+            this.game_options.setXTileCount(12);
+            this.game_options.setTileSize(50);
+            this.game_options.setPlanetCount(3);
+            this.game_options.setCometCount(5);
+
             this.stage.setScene(this.menu_scene);
         });
 
@@ -169,15 +162,15 @@ public class Main extends Application {
 
         Image tile_background = new Image (new File(RESOURCE_PATH + "space-background.png").toURI().toString());
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
                 Tile tile = new Tile(x, y, tile_background);
                 grid[x][y] = tile;
             }
         }
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
                 grid[x][y].setNeighbours(getNeighbours(grid[x][y]));
             }
         }
@@ -188,17 +181,16 @@ public class Main extends Application {
         //creating Comets.
         for(int i = 0; i < comets.length; i++)
         {
-            int posX = getRandom(1, X_TILES -1);
-            int posY = getRandom(1, Y_TILES -1);
+            int posX = getRandom(1, this.game_options.getXTileCount() -1);
+            int posY = getRandom(1, this.game_options.getYTileCount() -1);
             Comet comet = new Comet(new Image (new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
         }
 
-        this.planets = new Planet[this.game_options.getPlanetCount()];
         for (Planet planet : this.planets) {
-            int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            int position_x = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+            int position_y = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
             Tile planet_tile = this.grid[position_x][position_y];
             planet = new Planet(
                     new Image(new File(RESOURCE_PATH + "planet_unknown.png").toURI().toString()),
@@ -253,7 +245,7 @@ public class Main extends Application {
             int newX = tile.getPosition_x() + dx;
             int newY = tile.getPosition_y() + dy;
 
-            if (newX >= 0 && newX < X_TILES && newY >= 0 && newY < Y_TILES) {
+            if (newX >= 0 && newX < this.game_options.getXTileCount() && newY >= 0 && newY < this.game_options.getYTileCount()) {
                 neighbors.add(grid[newX][newY]);
             } else {
                 neighbors.add(emptyTile);
@@ -275,12 +267,12 @@ public class Main extends Application {
             game.getChildren().clear();
         }
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
                 game.getChildren().add(grid[x][y].getPane());
             }
         }
-        int game_size = TILE_SIZE * X_TILES;
+        int game_size = TILE_SIZE * this.game_options.getXTileCount();
 //        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
 //        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
         String text = "Score: " + score;
@@ -296,12 +288,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
-    }
-
-    private void exitApplication() {
-        // TODO ? save to filesystem
-
-        this.stage.close();
+        Application.launch(args);
     }
 }
