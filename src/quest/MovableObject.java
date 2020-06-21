@@ -85,7 +85,7 @@ public class MovableObject extends Object {
                     neighbours.get(1).setObject(this);
                     setTile(neighbours.get(1));
                 } else {
-                    getCollision(neighbours.get(1));
+                    Main.game_over = getCollision(neighbours.get(1));
                 }
                 break;
             }
@@ -95,7 +95,7 @@ public class MovableObject extends Object {
                     neighbours.get(2).setObject(this);
                     setTile(neighbours.get(2));
                 } else {
-                    getCollision(neighbours.get(2));
+                    Main.game_over = getCollision(neighbours.get(2));
                 }
                 break;
             }
@@ -105,7 +105,7 @@ public class MovableObject extends Object {
                     neighbours.get(3).setObject(this);
                     setTile(neighbours.get(3));
                 } else {
-                    getCollision(neighbours.get(3));
+                    Main.game_over = getCollision(neighbours.get(3));
                 }
                 break;
             }
