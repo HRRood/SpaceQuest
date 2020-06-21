@@ -63,6 +63,7 @@ public class MovableObject extends Object {
 
     public void moveObject(String move_to) {
         Tile object_tile = getTile();
+        Object collided = null;
         if (object_tile == null) {
             return;
         }
@@ -74,7 +75,7 @@ public class MovableObject extends Object {
                     neighbours.get(0).setObject(this);
                     setTile(neighbours.get(0));
                 } else {
-                    Main.game_over = getCollision(neighbours.get(0));
+                    collided = (Object) getCollision(neighbours.get(0));
                 }
                 break;
             }
@@ -84,7 +85,7 @@ public class MovableObject extends Object {
                     neighbours.get(1).setObject(this);
                     setTile(neighbours.get(1));
                 } else {
-                    Main.game_over = getCollision(neighbours.get(1));
+                    collided = (Object) getCollision(neighbours.get(1));
                 }
                 break;
             }
@@ -94,7 +95,7 @@ public class MovableObject extends Object {
                     neighbours.get(2).setObject(this);
                     setTile(neighbours.get(2));
                 } else {
-                    Main.game_over = getCollision(neighbours.get(2));
+                    collided = (Object) getCollision(neighbours.get(2));
                 }
                 break;
             }
@@ -104,7 +105,7 @@ public class MovableObject extends Object {
                     neighbours.get(3).setObject(this);
                     setTile(neighbours.get(3));
                 } else {
-                    Main.game_over = getCollision(neighbours.get(3));
+                    collided = (Object) getCollision(neighbours.get(3));
                 }
                 break;
             }
@@ -114,17 +115,35 @@ public class MovableObject extends Object {
                 break;
             }
         }
+
+        if (collided != null) {
+            if (collided instanceof Comet) {
+                Main.game_over = true;
+            }
+
+            if (collided instanceof Planet) {
+                ((Planet) collided).setVisited();
+            }
+        }
         this.direction = move_to;
     }
 
-    public boolean getCollision (Tile got_to_tile) {
+    public Object getCollision (Tile got_to_tile) {
         if (this instanceof User) {
-            return got_to_tile.getObject() instanceof Comet;
+            if (got_to_tile.getObject() instanceof Comet) {
+                return got_to_tile.getObject();
+            }
+
+            if (got_to_tile.getObject() instanceof Planet) {
+                return got_to_tile.getObject();
+            }
         }
 
         if (this instanceof Comet) {
-            return got_to_tile.getObject() instanceof User;
+            if (got_to_tile.getObject() instanceof User) {
+                return got_to_tile.getObject();
+            }
         }
-        return false;
+        return null;
     }
 }
