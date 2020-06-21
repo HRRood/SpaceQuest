@@ -17,10 +17,6 @@ public class MovableObject extends Object {
         super(sprite, tile);
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
     public Integer getDirection() {
         if (direction == null) {
             return 0;
@@ -45,53 +41,28 @@ public class MovableObject extends Object {
         switch (code) {
             case W:
             case UP: {
-                setDirection("up");
                 moveObject("up");
                 break;
             }
             case S:
             case DOWN: {
-                setDirection("down");
                 moveObject("down");
                 break;
             }
             case A:
             case LEFT: {
-                setDirection("left");
                 moveObject("left");
                 break;
             }
             case D:
             case RIGHT: {
-                setDirection("right");
                 moveObject("right");
                 break;
             }
         }
     }
 
-    public void setMove(int dir)
-    {
-        switch(dir)
-        {
-            case 1: //up
-                moveObject("up");
-                break;
-            case 2: //down
-                moveObject("down");
-                break;
-            case 3: //left.
-                moveObject("left");
-                break;
-            case 4: //right
-                moveObject("right");
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void moveObject(String move_to) {
+    public void moveObject(String move_to) {
         Tile object_tile = getTile();
         if (object_tile == null) {
             return;
@@ -136,5 +107,6 @@ public class MovableObject extends Object {
                 break;
             }
         }
+        this.direction = move_to;
     }
 }

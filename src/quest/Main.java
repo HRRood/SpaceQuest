@@ -121,8 +121,6 @@ public class Main extends Application {
         user = new User(new Image (new File(resources + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
-        updateGame();
-
         //creating Comets.
         for(int i = 0; i < comets.length; i++)
         {
@@ -132,6 +130,8 @@ public class Main extends Application {
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
         }
+
+        updateGame();
 
         root.getChildren().addAll(game, score_text);
         return root;
@@ -147,8 +147,8 @@ public class Main extends Application {
                     @Override
                     public void run() {
                         score++;
-                        updateGame();
                         lateUpdate();
+                        updateGame();
                     }
                 });
             }
