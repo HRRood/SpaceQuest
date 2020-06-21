@@ -103,7 +103,7 @@ public class Main extends Application {
         this.menu.getChildren().add(menu_buttons);
         this.menu.setBackground(
             new Background(
-                    new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
+                new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
             )
         );
 
@@ -244,9 +244,10 @@ public class Main extends Application {
                 game.getChildren().add(grid[x][y].getPane());
             }
         }
-        int game_size = TILE_SIZE * X_TILES;
-        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
-        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+        int game_size_width = TILE_SIZE * X_TILES;
+        int game_size_height = TILE_SIZE * Y_TILES;
+        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size_width * 0.5));
+        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size_height * 0.5));
         String text = "Score: " + score;
         score_text.setText(text);
     }
