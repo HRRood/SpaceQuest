@@ -2,36 +2,28 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    String resources = "src/quest/Resources/";
+    String resources_path = "src/quest/Resources/";
 
     public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
@@ -54,6 +46,9 @@ public class Main extends Application {
     private Integer score = -1;
 
     private Comet[] comets = new Comet[5];
+
+    private int planet_count;
+    private Planet[] planets;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -103,7 +98,7 @@ public class Main extends Application {
         score_text.setFont(new Font(38));
         StackPane.setAlignment(score_text, Pos.TOP_CENTER);
 
-        Image tile_background = new Image (new File(resources + "space-background.png").toURI().toString());
+        Image tile_background = new Image (new File(resources_path + "space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
@@ -118,7 +113,7 @@ public class Main extends Application {
             }
         }
 
-        user = new User(new Image (new File(resources + "spaceship.png").toURI().toString()), grid[0][0], "up");
+        user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
         updateGame();
@@ -128,9 +123,23 @@ public class Main extends Application {
         {
             int posX = getRandom(1, X_TILES -1);
             int posY = getRandom(1, Y_TILES -1);
-            Comet comet = new Comet(new Image (new File(resources + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
+        }
+
+        this.planet_count = 10; // TODO ? Move to game config object.
+        this.planets = new Planet[this.planet_count];
+        for (Planet planet : this.planets) {
+            int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            Tile planet_tile = this.grid[position_x][position_y];
+            planet = new Planet(
+                    new Image(new File(this.resources_path + "planet_unvisited.png").toURI().toString()),
+                    new Image(new File(this.resources_path + "planet_visited.png").toURI().toString()),
+                    planet_tile
+            );
+            planet_tile.setObject(planet);
         }
 
         root.getChildren().addAll(game, score_text);

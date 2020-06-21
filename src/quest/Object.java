@@ -12,7 +12,11 @@ public class Object {
     }
 
     public Image getSprite() {
-        return sprite;
+        return this.sprite;
+    }
+
+    public void setSprite(Image sprite) {
+        this.sprite = sprite;
     }
 
     public Tile getTile() {
