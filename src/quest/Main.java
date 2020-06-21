@@ -50,7 +50,7 @@ public class Main extends Application {
     private int comet_number = 5;
     private Comet[] comets = new Comet[comet_number];
 
-    private int planet_count = 9;
+    private int planet_count = 5;
     private Planet[] planets = new Planet[planet_count];
 
     public static boolean game_over = false;
