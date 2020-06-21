@@ -12,6 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -24,21 +26,28 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    String resources_path = "src/quest/Resources/";
+    private static final String RESOURCE_PATH = "src/quest/Resources/";
+    private static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+    private static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+    private static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
+    private static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
+    private static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
+    private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
+
+    private GameOptions game_options;
+
+    private Stage stage;
+    private Scene game_scene;
+    private Scene options_scene;
+    private Scene menu_scene;
+
 
     public static final int TILE_SIZE = 60;
-    private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight() ;
 
     private static final int X_TILES = 15;
     private static final int Y_TILES = 15;
 
-    private Stage primaryStage;
-    private Scene game_scene;
-    private Scene menu_scene;
-
     private Pane game;
-    private StackPane menu;
     private Tile[][] grid = new Tile[X_TILES][Y_TILES];
     private Label score_text;
 
@@ -46,19 +55,22 @@ public class Main extends Application {
 
     private Integer score = -1;
 
-    private int comet_number = 5;
-    private Comet[] comets = new Comet[comet_number];
+    private Comet[] comets = new Comet[this.game_options.getCometCount()];
 
-    private int planet_count;
     private Planet[] planets;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        menu_scene = new Scene(createMenu());
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Space Quest");
-        this.primaryStage.setScene(menu_scene);
-        this.primaryStage.show();
+    public void start(Stage stage) throws Exception {
+        this.game_options = new GameOptions();
+
+        this.menu_scene = this.createMenuScene();
+        this.options_scene = this.createOptionsScene();
+
+        this.stage = stage;
+        this.stage.setTitle("Space Quest");
+        this.stage.setScene(this.menu_scene);
+        this.stage.setMaximized(true);
+        this.stage.show();
     }
 
     @Override
@@ -67,26 +79,23 @@ public class Main extends Application {
     }
 
     //creates the menu.
-    private Parent createMenu () {
-        this.menu = new StackPane();
-        this.menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
+    private Scene createMenuScene() {
         Button start_button = new Button("Start Game");
-        start_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         start_button.setOnAction(event -> {
             this.game_scene = new Scene(createGame());
             this.addHandlers();
-            this.primaryStage.setScene(this.game_scene);
+            this.stage.setScene(this.game_scene);
         });
 
         Button options_button = new Button("Game Options");
-        options_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        options_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         options_button.setOnAction(event -> {
-            // TODO optionsButton
+            this.stage.setScene(this.options_scene);
         });
 
         Button exit_button = new Button("Exit");
-        exit_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exit_button.setOnAction(event -> {
             this.exitApplication();
         });
@@ -97,29 +106,68 @@ public class Main extends Application {
         menu_buttons.getChildren().addAll(start_button, options_button, exit_button);
         menu_buttons.setAlignment(Pos.CENTER);
 
-        this.menu.getChildren().add(menu_buttons);
-        this.menu.setBackground(
+        StackPane menu = new StackPane();
+        // menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        menu.getChildren().add(menu_buttons);
+        menu.setBackground(
                 new Background(
                         new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
                 )
         );
 
-        return this.menu;
+        return new Scene(menu);
+    }
+
+    private Scene createOptionsScene() {
+        GridPane grid = new GridPane();
+//        grid.setAlignment(Pos.CENTER);
+//        grid.setHgap(10);
+//        grid.setVgap(10);
+//        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setBackground(
+                new Background(
+                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
+                )
+        );
+
+        Text title = new Text("Game Options");
+        title.setFont(Font.font("Determination", FontWeight.BOLD, 20));
+        grid.add(title, 0, 0, 2, 1);
+
+        Button save_button = new Button("Save and go back");
+        save_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        save_button.setOnAction(event -> {
+            this.stage.setScene(this.menu_scene);
+        });
+
+//        Label userName = new Label("User Name:");
+//        grid.add(userName, 0, 1);
+//
+//        TextField userTextField = new TextField();
+//        grid.add(userTextField, 1, 1);
+//
+//        Label pw = new Label("Password:");
+//        grid.add(pw, 0, 2);
+//
+//        PasswordField pwBox = new PasswordField();
+//        grid.add(pwBox, 1, 2);
+
+        return new Scene(grid, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
         StackPane root = new StackPane();
-        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        // root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game = new Pane();
-        game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        // game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         String player_score = "Score: " + score;
         score_text = new Label(player_score);
         score_text.setFont(new Font(38));
         StackPane.setAlignment(score_text, Pos.TOP_CENTER);
 
-        Image tile_background = new Image (new File(resources_path + "space-background.png").toURI().toString());
+        Image tile_background = new Image (new File(RESOURCE_PATH + "space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
@@ -134,7 +182,7 @@ public class Main extends Application {
             }
         }
 
-        user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
+        user = new User(new Image (new File(RESOURCE_PATH + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
         //creating Comets.
@@ -142,20 +190,19 @@ public class Main extends Application {
         {
             int posX = getRandom(1, X_TILES -1);
             int posY = getRandom(1, Y_TILES -1);
-            Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            Comet comet = new Comet(new Image (new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
         }
 
-        this.planet_count = 10; // TODO ? Move to game config object.
-        this.planets = new Planet[this.planet_count];
+        this.planets = new Planet[this.game_options.getPlanetCount()];
         for (Planet planet : this.planets) {
             int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
             int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
             Tile planet_tile = this.grid[position_x][position_y];
             planet = new Planet(
-                    new Image(new File(this.resources_path + "planet_unvisited.png").toURI().toString()),
-                    new Image(new File(this.resources_path + "planet_visited.png").toURI().toString()),
+                    new Image(new File(RESOURCE_PATH + "planet_unknown.png").toURI().toString()),
+                    new Image(new File(RESOURCE_PATH + "planet_earth.png").toURI().toString()),
                     planet_tile
             );
             planet_tile.setObject(planet);
@@ -163,8 +210,8 @@ public class Main extends Application {
 
         updateGame();
 
-
         root.getChildren().addAll(game, score_text);
+
         return root;
     }
 
@@ -234,8 +281,8 @@ public class Main extends Application {
             }
         }
         int game_size = TILE_SIZE * X_TILES;
-        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
-        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+//        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
+//        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
         String text = "Score: " + score;
         score_text.setText(text);
     }
@@ -255,6 +302,6 @@ public class Main extends Application {
     private void exitApplication() {
         // TODO ? save to filesystem
 
-        this.primaryStage.close();
+        this.stage.close();
     }
 }
