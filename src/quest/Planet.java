@@ -6,8 +6,8 @@ public class Planet extends Object {
 
     private boolean visited = false;
 
-    public Planet(Image unvisited_sprite, Tile tile) {
-        super(unvisited_sprite, tile);
+    public Planet(Image sprite, Tile tile) {
+        super(sprite, tile);
     }
 
     public boolean isVisited() {
