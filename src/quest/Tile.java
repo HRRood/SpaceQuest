@@ -94,10 +94,12 @@ public class Tile {
         isAvailable = false;
     }
 
-    public void emptyTile()
-    {
+    public void emptyTile() {
         this.object = null;
         isAvailable = true;
     }
 
+    public Object getObject () {
+        return this.object;
+    }
 }

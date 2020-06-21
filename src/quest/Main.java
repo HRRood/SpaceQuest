@@ -2,6 +2,7 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -52,6 +53,8 @@ public class Main extends Application {
     private int planet_count;
     private Planet[] planets;
 
+    public static boolean game_over = false;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         menu_scene = new Scene(createMenu());
@@ -99,9 +102,9 @@ public class Main extends Application {
 
         this.menu.getChildren().add(menu_buttons);
         this.menu.setBackground(
-                new Background(
-                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
-                )
+            new Background(
+                    new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
+            )
         );
 
         return this.menu;
@@ -147,7 +150,7 @@ public class Main extends Application {
             comets[i] = comet;
         }
 
-        this.planet_count = 10; // TODO ? Move to game config object.
+        this.planet_count = 3; // TODO ? Move to game config object.
         this.planets = new Planet[this.planet_count];
         for (Planet planet : this.planets) {
             int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
@@ -174,6 +177,10 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if (game_over) {
+                    timer.cancel();
+                    return;
+                }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -185,6 +192,9 @@ public class Main extends Application {
             }
         }, 0, 1000);
         game_scene.setOnKeyPressed(event -> {
+            if (game_over) {
+                return;
+            }
             user.handleKeyPressed(event.getCode());
             updateGame();
         });
