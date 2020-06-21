@@ -83,7 +83,14 @@ public class Main extends Application {
 
         Button options = new Button("Game Options");
         options.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        vbButtons.getChildren().addAll(start, options);
+
+        Button exit = new Button("Exit");
+        exit.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exit.setOnAction(event -> {
+            this.primaryStage.close();
+        });
+
+        vbButtons.getChildren().addAll(start, options, exit);
 
         menu.getChildren().add(vbButtons);
         vbButtons.setAlignment(Pos.CENTER);
