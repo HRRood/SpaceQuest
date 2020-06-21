@@ -2,20 +2,23 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,14 +38,15 @@ public class Main extends Application {
     private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
 
     private GameOptions game_options;
-    private Stage stage;
-    private Scene game_scene;
-    private Scene options_scene;
-    private Scene menu_scene;
 
     private Tile[][] grid;
     private Comet[] comets;
     private Planet[] planets;
+
+    private Stage stage;
+    private Scene game_scene;
+    private Scene options_scene;
+    private Scene menu_scene;
 
 
     public static final int TILE_SIZE = 60;
@@ -54,7 +58,7 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception {
         this.game_options = new GameOptions();
 
         this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
@@ -72,7 +76,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop() {
+    public void stop() throws Exception {
         this.stage.close();
     }
 
@@ -95,65 +99,108 @@ public class Main extends Application {
         Button exit_button = new Button("Exit");
         exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exit_button.setOnAction(event -> {
-            this.stop();
+            try {
+                this.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
-        VBox menu_buttons = new VBox();
+        VBox menu_buttons = new VBox(start_button, options_button, exit_button);
         menu_buttons.setSpacing(10);
-        menu_buttons.setPadding(new Insets(0, 20, 10, 20));
-        menu_buttons.getChildren().addAll(start_button, options_button, exit_button);
         menu_buttons.setAlignment(Pos.CENTER);
 
-        StackPane menu = new StackPane();
-        menu.getChildren().add(menu_buttons);
-
-        return new Scene(menu, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
+        return new Scene(menu_buttons, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     private Scene createOptionsScene() {
-        GridPane grid = new GridPane();
-//        grid.setAlignment(Pos.CENTER);
-//        grid.setHgap(10);
-//        grid.setVgap(10);
-//        grid.setPadding(new Insets(25, 25, 25, 25));
-
         Text title = new Text("Game Options");
-        title.setFont(Font.font("Determination", FontWeight.BOLD, 20));
-        grid.add(title, 0, 0, 2, 1);
+        title.setFont(Font.font(20));
 
-        Button save_button = new Button("Save and go back");
-        save_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        save_button.setOnAction(event -> {
-            this.game_options.setYTileCount(12);
-            this.game_options.setXTileCount(12);
-            this.game_options.setTileSize(50);
-            this.game_options.setPlanetCount(3);
-            this.game_options.setCometCount(5);
+        Label x_tile_count_label = new Label(
+                String.format("Tiles in width: %d", this.game_options.getXTileCount())
+        );
+        Slider x_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
+        x_tile_count.setMaxWidth(STAGE_WIDTH * .3);
+        x_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setXTileCount(newValue.intValue());
+            x_tile_count_label.setText(
+                String.format("Tiles in width: %d", this.game_options.getXTileCount())
+            );
+        });
 
+        Label y_tile_count_label = new Label(
+                String.format("Tiles in height: %d", this.game_options.getYTileCount())
+        );
+        Slider y_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
+        y_tile_count.setMaxWidth(STAGE_WIDTH * .3);
+        y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setYTileCount(newValue.intValue());
+            y_tile_count_label.setText(
+                    String.format("Tiles in height: %d", this.game_options.getYTileCount())
+            );
+        });
+
+        Label tile_size_label = new Label(
+                String.format("Tile size: %d", this.game_options.getTileSize())
+        );
+        Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
+        tile_size.setMaxWidth(STAGE_WIDTH * .3);
+        tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setTileSize(newValue.intValue());
+            tile_size_label.setText(
+                    String.format("Tile size: %d", this.game_options.getTileSize())
+            );
+        });
+
+        Label planet_count_label = new Label(
+                String.format("Planets: %d", this.game_options.getPlanetCount())
+        );
+        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
+        planet_count.setMaxWidth(STAGE_WIDTH * .3);
+        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setPlanetCount(newValue.intValue());
+            planet_count_label.setText(
+                    String.format("Planets: %d", this.game_options.getPlanetCount())
+            );
+        });
+
+        Label comet_count_label = new Label(
+                String.format("Comets: %d", this.game_options.getCometCount())
+        );
+        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
+        comet_count.setMaxWidth(STAGE_WIDTH * .3);
+        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setCometCount(newValue.intValue());
+            comet_count_label.setText(
+                    String.format("Comets: %d", this.game_options.getCometCount())
+            );
+        });
+
+        Button save_and_go_back = new Button("Save and go back");
+        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        save_and_go_back.setOnAction(event -> {
             this.stage.setScene(this.menu_scene);
         });
 
-//        Label userName = new Label("User Name:");
-//        grid.add(userName, 0, 1);
-//
-//        TextField userTextField = new TextField();
-//        grid.add(userTextField, 1, 1);
-//
-//        Label pw = new Label("Password:");
-//        grid.add(pw, 0, 2);
-//
-//        PasswordField pwBox = new PasswordField();
-//        grid.add(pwBox, 1, 2);
 
-        return new Scene(grid, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
+        VBox options_box = new VBox(
+                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
+                tile_size_label, tile_size, planet_count_label, planet_count,
+                comet_count_label, comet_count, save_and_go_back
+        );
+        options_box.setSpacing(10);
+        options_box.setAlignment(Pos.CENTER);
+
+        return new Scene(options_box, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
         StackPane root = new StackPane();
-        // root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        root.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
         game = new Pane();
-        // game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        game.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
 
         String player_score = "Score: " + score;
         score_text = new Label(player_score);
@@ -223,9 +270,10 @@ public class Main extends Application {
                 });
             }
         }, 0, 1000);
-        game_scene.setOnKeyPressed(event -> {
-            user.handleKeyPressed(event.getCode());
-            updateGame();
+
+        this.game_scene.setOnKeyPressed(event -> {
+            this.user.handleKeyPressed(event.getCode());
+            this.updateGame();
         });
     }
 
@@ -272,9 +320,10 @@ public class Main extends Application {
                 game.getChildren().add(grid[x][y].getPane());
             }
         }
-        int game_size = TILE_SIZE * this.game_options.getXTileCount();
-//        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size * 0.5));
-//        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size * 0.5));
+
+        int game_size = this.game_options.getTileSize() * this.game_options.getXTileCount();
+        game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
+        game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
         String text = "Score: " + score;
         score_text.setText(text);
     }
