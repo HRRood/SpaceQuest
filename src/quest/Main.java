@@ -29,7 +29,7 @@ public class Main extends Application {
 
     public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
+    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight() ;
 
     private static final int X_TILES = 15;
     private static final int Y_TILES = 15;
@@ -47,7 +47,8 @@ public class Main extends Application {
 
     private Integer score = -1;
 
-    private Comet[] comets = new Comet[5];
+    private int comet_number = 5;
+    private Comet[] comets = new Comet[comet_number];
 
     private int planet_count;
     private Planet[] planets;
@@ -111,16 +112,19 @@ public class Main extends Application {
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
+        //create game screen.
         StackPane root = new StackPane();
         root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game = new Pane();
         game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+        //create score.
         String player_score = "Score: " + score;
         score_text = new Label(player_score);
         score_text.setFont(new Font(38));
         StackPane.setAlignment(score_text, Pos.TOP_CENTER);
 
+        //create tiles with background + setting the neighbours of tiles.
         Image tile_background = new Image (new File(resources_path + "space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
@@ -136,20 +140,23 @@ public class Main extends Application {
             }
         }
 
+        //create player.
         user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
         //creating Comets.
         for(int i = 0; i < comets.length; i++)
         {
-            int posX = getRandom(1, X_TILES -1);
-            int posY = getRandom(1, Y_TILES -1);
+            int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
             Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
         }
 
+        //creating planets
         this.planet_count = 3; // TODO ? Move to game config object.
+
         this.planets = new Planet[this.planet_count];
         for (Planet planet : this.planets) {
             int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
@@ -163,9 +170,10 @@ public class Main extends Application {
             planet_tile.setObject(planet);
         }
 
+        //updating game.
         updateGame();
 
-
+        //set all game objects in scene.
         root.getChildren().addAll(game, score_text);
         return root;
     }
@@ -225,13 +233,6 @@ public class Main extends Application {
         return neighbors;
     }
 
-    //get a random number between a min & a max.
-    private int getRandom(int min, int max)
-    {
-        int temp = (int)(Math.random() * (max - min + 1) + min);
-        return temp;
-    }
-
     //update & Render
     public void updateGame() {
         if (!game.getChildren().isEmpty()) {
@@ -251,8 +252,7 @@ public class Main extends Application {
     }
 
     //Update Object that update time based.
-    public void lateUpdate()
-    {
+    public void lateUpdate() {
         //update comets.
         for (Comet c :  comets) {
             c.update();
