@@ -45,7 +45,7 @@ public class Main extends Application {
 
     private User user;
 
-    private Integer score = -1;
+    private static Integer score = -1;
 
     private Comet[] comets = new Comet[5];
 
