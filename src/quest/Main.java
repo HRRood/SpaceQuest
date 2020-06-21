@@ -69,35 +69,39 @@ public class Main extends Application {
         this.menu = new StackPane();
         this.menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        Button startButton = new Button("Start Game");
-        startButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        startButton.setOnAction(event -> {
+        Button start_button = new Button("Start Game");
+        start_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        start_button.setOnAction(event -> {
             this.game_scene = new Scene(createGame());
             this.addHandlers();
             this.primaryStage.setScene(this.game_scene);
         });
 
-        Button optionsButton = new Button("Game Options");
-        optionsButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        optionsButton.setOnAction(event -> {
+        Button options_button = new Button("Game Options");
+        options_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        options_button.setOnAction(event -> {
             // TODO optionsButton
         });
 
-        Button exitButton = new Button("Exit");
-        exitButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        exitButton.setOnAction(event -> {
+        Button exit_button = new Button("Exit");
+        exit_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exit_button.setOnAction(event -> {
             // TODO ? save to filesystem
             this.primaryStage.close();
         });
 
-        VBox menuButtons = new VBox();
-        menuButtons.setSpacing(10);
-        menuButtons.setPadding(new Insets(0, 20, 10, 20));
-        menuButtons.getChildren().addAll(startButton, optionsButton, exitButton);
-        menuButtons.setAlignment(Pos.CENTER);
+        VBox menu_buttons = new VBox();
+        menu_buttons.setSpacing(10);
+        menu_buttons.setPadding(new Insets(0, 20, 10, 20));
+        menu_buttons.getChildren().addAll(start_button, options_button, exit_button);
+        menu_buttons.setAlignment(Pos.CENTER);
 
-        this.menu.getChildren().add(menuButtons);
-        this.menu.setStyle("-fx-background-color: darkgray;");;
+        this.menu.getChildren().add(menu_buttons);
+        this.menu.setBackground(
+                new Background(
+                        new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
+                )
+        );
 
         return this.menu;
     }
