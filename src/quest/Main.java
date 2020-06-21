@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    String resources = "src/quest/Resources/";
+    String resources_path = "src/quest/Resources/";
 
     public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
@@ -48,13 +49,21 @@ public class Main extends Application {
     private int comet_number = 5;
     private Comet[] comets = new Comet[comet_number];
 
+    private int planet_count;
+    private Planet[] planets;
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         menu_scene = new Scene(createMenu());
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Space Quest");
         this.primaryStage.setScene(menu_scene);
         this.primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        this.exitApplication();
     }
 
     //creates the menu.
@@ -79,8 +88,7 @@ public class Main extends Application {
         Button exit_button = new Button("Exit");
         exit_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
         exit_button.setOnAction(event -> {
-            // TODO ? save to filesystem
-            this.primaryStage.close();
+            this.exitApplication();
         });
 
         VBox menu_buttons = new VBox();
@@ -111,7 +119,7 @@ public class Main extends Application {
         score_text.setFont(new Font(38));
         StackPane.setAlignment(score_text, Pos.TOP_CENTER);
 
-        Image tile_background = new Image (new File(resources + "space-background.png").toURI().toString());
+        Image tile_background = new Image (new File(resources_path + "space-background.png").toURI().toString());
 
         for (int y = 0; y < Y_TILES; y++) {
             for (int x = 0; x < X_TILES; x++) {
@@ -126,7 +134,7 @@ public class Main extends Application {
             }
         }
 
-        user = new User(new Image (new File(resources + "spaceship.png").toURI().toString()), grid[0][0], "up");
+        user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
         grid[0][0].setObject(user);
 
         //creating Comets.
@@ -134,12 +142,27 @@ public class Main extends Application {
         {
             int posX = getRandom(1, X_TILES -1);
             int posY = getRandom(1, Y_TILES -1);
-            Comet comet = new Comet(new Image (new File(resources + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
         }
 
+        this.planet_count = 10; // TODO ? Move to game config object.
+        this.planets = new Planet[this.planet_count];
+        for (Planet planet : this.planets) {
+            int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            Tile planet_tile = this.grid[position_x][position_y];
+            planet = new Planet(
+                    new Image(new File(this.resources_path + "planet_unvisited.png").toURI().toString()),
+                    new Image(new File(this.resources_path + "planet_visited.png").toURI().toString()),
+                    planet_tile
+            );
+            planet_tile.setObject(planet);
+        }
+
         updateGame();
+
 
         root.getChildren().addAll(game, score_text);
         return root;
@@ -227,5 +250,11 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void exitApplication() {
+        // TODO ? save to filesystem
+
+        this.primaryStage.close();
     }
 }
