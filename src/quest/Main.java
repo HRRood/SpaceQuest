@@ -145,7 +145,7 @@ public class Main extends Application {
         for(int i = 0; i < comets.length; i++)
         {
             int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
             Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
             grid[posX][posY].setObject(comet);
             comets[i] = comet;
