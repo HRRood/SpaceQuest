@@ -2,28 +2,20 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -35,7 +27,7 @@ public class Main extends Application {
 
     public static final int TILE_SIZE = 60;
     private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
+    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight() ;
 
     private static final int X_TILES = 15;
     private static final int Y_TILES = 15;
@@ -53,7 +45,8 @@ public class Main extends Application {
 
     private Integer score = -1;
 
-    private Comet[] comets = new Comet[5];
+    private int comet_number = 5;
+    private Comet[] comets = new Comet[comet_number];
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -201,8 +194,7 @@ public class Main extends Application {
     }
 
     //get a random number between a min & a max.
-    private int getRandom(int min, int max)
-    {
+    private int getRandom(int min, int max)   {
         int temp = (int)(Math.random() * (max - min + 1) + min);
         return temp;
     }
@@ -226,8 +218,7 @@ public class Main extends Application {
     }
 
     //Update Object that update time based.
-    public void lateUpdate()
-    {
+    public void lateUpdate() {
         //update comets.
         for (Comet c :  comets) {
             c.update();
