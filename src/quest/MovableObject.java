@@ -1,6 +1,5 @@
 package quest;
 
-import javafx.event.Event;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
