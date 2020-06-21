@@ -74,6 +74,8 @@ public class MovableObject extends Object {
                     object_tile.emptyTile();
                     neighbours.get(0).setObject(this);
                     setTile(neighbours.get(0));
+                } else {
+                    Main.game_over = getCollision(neighbours.get(0));
                 }
                 break;
             }
@@ -82,6 +84,8 @@ public class MovableObject extends Object {
                     object_tile.emptyTile();
                     neighbours.get(1).setObject(this);
                     setTile(neighbours.get(1));
+                } else {
+                    getCollision(neighbours.get(1));
                 }
                 break;
             }
@@ -90,6 +94,8 @@ public class MovableObject extends Object {
                     object_tile.emptyTile();
                     neighbours.get(2).setObject(this);
                     setTile(neighbours.get(2));
+                } else {
+                    getCollision(neighbours.get(2));
                 }
                 break;
             }
@@ -98,6 +104,8 @@ public class MovableObject extends Object {
                     object_tile.emptyTile();
                     neighbours.get(3).setObject(this);
                     setTile(neighbours.get(3));
+                } else {
+                    getCollision(neighbours.get(3));
                 }
                 break;
             }
@@ -108,5 +116,16 @@ public class MovableObject extends Object {
             }
         }
         this.direction = move_to;
+    }
+
+    public boolean getCollision (Tile got_to_tile) {
+        if (this instanceof User) {
+            return got_to_tile.getObject() instanceof Comet;
+        }
+
+        if (this instanceof Comet) {
+            return got_to_tile.getObject() instanceof User;
+        }
+        return false;
     }
 }
