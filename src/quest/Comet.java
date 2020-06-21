@@ -9,8 +9,7 @@ public class Comet extends MovableObject {
     }
 
     //updating Comet
-    public void update()
-    {
+    public void update() {
 
         //get random location.
         int newPos = getRandom();
@@ -30,8 +29,7 @@ public class Comet extends MovableObject {
 
     }
 
-    private int getRandom()
-    {
+    private int getRandom() {
         return (int)(Math.random() * (3 + 1) + 0);
     }
 

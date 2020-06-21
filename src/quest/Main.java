@@ -50,8 +50,8 @@ public class Main extends Application {
     private int comet_number = 5;
     private Comet[] comets = new Comet[comet_number];
 
-    private int planet_count;
-    private Planet[] planets;
+    private int planet_count = 9;
+    private Planet[] planets = new Planet[planet_count];
 
     public static boolean game_over = false;
 
@@ -145,8 +145,7 @@ public class Main extends Application {
         grid[0][0].setObject(user);
 
         //creating Comets.
-        for(int i = 0; i < comets.length; i++)
-        {
+        for(int i = 0; i < comets.length; i++) {
             int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
             int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
             Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
@@ -155,17 +154,16 @@ public class Main extends Application {
         }
 
         //creating planets
-        this.planet_count = 3; // TODO ? Move to game config object.
-
         this.planets = new Planet[this.planet_count];
         for (Planet planet : this.planets) {
             int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
             int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            int random_image = ThreadLocalRandom.current().nextInt(1, 4);
+            System.out.println(random_image);
             Tile planet_tile = this.grid[position_x][position_y];
             planet = new Planet(
-                    new Image(new File(this.resources_path + "planet_unvisited.png").toURI().toString()),
-                    new Image(new File(this.resources_path + "planet_visited.png").toURI().toString()),
-                    planet_tile
+                new Image(new File(this.resources_path + "planet0"+ random_image +".png").toURI().toString()),
+                planet_tile
             );
             planet_tile.setObject(planet);
         }
