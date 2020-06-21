@@ -66,36 +66,40 @@ public class Main extends Application {
 
     //creates the menu.
     private Parent createMenu () {
-        menu = new StackPane();
-        menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.menu = new StackPane();
+        this.menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        VBox vbButtons = new VBox();
-        vbButtons.setSpacing(10);
-        vbButtons.setPadding(new Insets(0, 20, 10, 20));
-
-        Button start = new Button("Start Game");
-        start.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        start.setOnAction((event) -> {
-            game_scene = new Scene(createGame());
-            addHandlers();
-            primaryStage.setScene(game_scene);
+        Button startButton = new Button("Start Game");
+        startButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        startButton.setOnAction(event -> {
+            this.game_scene = new Scene(createGame());
+            this.addHandlers();
+            this.primaryStage.setScene(this.game_scene);
         });
 
-        Button options = new Button("Game Options");
-        options.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        Button optionsButton = new Button("Game Options");
+        optionsButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        optionsButton.setOnAction(event -> {
+            // TODO optionsButton
+        });
 
-        Button exit = new Button("Exit");
-        exit.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
-        exit.setOnAction(event -> {
+        Button exitButton = new Button("Exit");
+        exitButton.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exitButton.setOnAction(event -> {
+            // TODO ? save to filesystem
             this.primaryStage.close();
         });
 
-        vbButtons.getChildren().addAll(start, options, exit);
+        VBox menuButtons = new VBox();
+        menuButtons.setSpacing(10);
+        menuButtons.setPadding(new Insets(0, 20, 10, 20));
+        menuButtons.getChildren().addAll(startButton, optionsButton, exitButton);
+        menuButtons.setAlignment(Pos.CENTER);
 
-        menu.getChildren().add(vbButtons);
-        vbButtons.setAlignment(Pos.CENTER);
-        menu.setStyle("-fx-background-color: darkgray;");;
-        return menu;
+        this.menu.getChildren().add(menuButtons);
+        this.menu.setStyle("-fx-background-color: darkgray;");;
+
+        return this.menu;
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
