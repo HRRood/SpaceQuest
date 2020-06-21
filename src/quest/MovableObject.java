@@ -130,7 +130,7 @@ public class MovableObject extends Object {
         this.direction = move_to;
     }
 
-    public java.lang.Object getCollision (Tile got_to_tile) {
+    public Object getCollision (Tile got_to_tile) {
         if (this instanceof User) {
             if (got_to_tile.getObject() instanceof Comet) {
                 return got_to_tile.getObject();
