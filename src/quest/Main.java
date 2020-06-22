@@ -2,7 +2,6 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -15,6 +14,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import javafx.stage.Popup;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ public class Main extends Application {
 
     private int planet_count;
     private Planet[] planets;
+
+    private Popup popup;
 
     public static boolean game_over = false;
 
@@ -173,6 +176,9 @@ public class Main extends Application {
         //updating game.
         updateGame();
 
+
+
+
         //set all game objects in scene.
         root.getChildren().addAll(game, score_text);
         return root;
@@ -198,13 +204,53 @@ public class Main extends Application {
                 });
             }
         }, 0, 1000);
+
         game_scene.setOnKeyPressed(event -> {
             if (game_over) {
+                SetupGameOverMenu();
+                if (!popup.isShowing()) {
+                    popup.show(primaryStage);
+                }
                 return;
             }
             user.handleKeyPressed(event.getCode());
             updateGame();
         });
+    }
+
+    private void SetupGameOverMenu()
+    {
+        //creating the popup.
+        popup = new Popup();
+        popup.setWidth(400);
+        popup.setHeight(300);
+
+        //announce label.
+        Label background = new Label();
+        background.setStyle(" -fx-background-color: green;");
+        background.setMinWidth(popup.getWidth());
+        background.setMinHeight(popup.getHeight());
+
+        //result label.
+        String result_text = "GAME OVER";
+        Label result = new Label(result_text);
+        result.setFont(new Font(25));
+        result.setMinWidth(popup.getWidth());
+        result.setMinHeight(popup.getHeight());
+        result.setLayoutX(result.getMinWidth() / 4);
+        result.setLayoutY(result.getMinWidth() / 2);
+
+        //Score label.
+        String score_text = "Your score: " + score;
+        Label score = new Label(score_text);
+        score.setFont(new Font(25));
+        score.setMinWidth(popup.getWidth());
+        score.setMinHeight(popup.getHeight());
+        score.setLayoutX(score.getMinWidth() / 4);
+
+        //back to menu button.
+
+        popup.getContent().addAll(background, result, score);
     }
 
     //get the neighbours of the parameter tile.
