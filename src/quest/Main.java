@@ -50,10 +50,15 @@ public class Main extends Application {
     private int comet_number = 5;
     private Comet[] comets = new Comet[comet_number];
 
-    private int planet_count;
-    private Planet[] planets;
+    private int planet_count = 5;
+    private Planet[] planets = new Planet[planet_count];
+
+    private Wormhole wormhole;
 
     public static boolean game_over = false;
+    public static boolean game_won = false;
+
+    public boolean all_planets_visited = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -145,29 +150,33 @@ public class Main extends Application {
         grid[0][0].setObject(user);
 
         //creating Comets.
-        for(int i = 0; i < comets.length; i++)
-        {
+        for(int i = 0; i < comets.length; i++) {
             int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
             int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
-            grid[posX][posY].setObject(comet);
-            comets[i] = comet;
+
+            while (!grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            }
+
+            comets[i] = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            grid[posX][posY].setObject(comets[i]);
         }
 
         //creating planets
-        this.planet_count = 3; // TODO ? Move to game config object.
-
         this.planets = new Planet[this.planet_count];
-        for (Planet planet : this.planets) {
-            int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
-            Tile planet_tile = this.grid[position_x][position_y];
-            planet = new Planet(
-                    new Image(new File(this.resources_path + "planet_unvisited.png").toURI().toString()),
-                    new Image(new File(this.resources_path + "planet_visited.png").toURI().toString()),
-                    planet_tile
-            );
-            planet_tile.setObject(planet);
+        for (int i = 0; i < planets.length; i++) {
+            int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+
+            while (!grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            }
+            int random_image = ThreadLocalRandom.current().nextInt(1, 4);
+
+            planets[i] = new Planet(new Image(new File(this.resources_path + "planet0"+ random_image +".png").toURI().toString()), this.grid[posX][posY]);
+            this.grid[posX][posY].setObject(planets[i]);
         }
 
         //updating game.
@@ -184,7 +193,7 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (game_over) {
+                if (game_over || game_won) {
                     timer.cancel();
                     return;
                 }
@@ -199,12 +208,35 @@ public class Main extends Application {
             }
         }, 0, 1000);
         game_scene.setOnKeyPressed(event -> {
-            if (game_over) {
+            if (game_over || game_won) {
                 return;
             }
             user.handleKeyPressed(event.getCode());
+            int planets_visited = 0;
+            for (Planet planet : planets) {
+                if (planet.isVisited()) {
+                    planets_visited++;
+                }
+            }
+
+            if (!all_planets_visited && planets_visited == planets.length) {
+                all_planets_visited = true;
+                setWormhole();
+            }
             updateGame();
         });
+    }
+
+    private void setWormhole () {
+        int random_x = ThreadLocalRandom.current().nextInt(0, X_TILES);
+        int random_y = ThreadLocalRandom.current().nextInt(0, Y_TILES);
+
+        while (!grid[random_x][random_y].isAvailable()) {
+            random_x = ThreadLocalRandom.current().nextInt(0, X_TILES);
+            random_y = ThreadLocalRandom.current().nextInt(0, Y_TILES);
+        }
+        wormhole = new Wormhole(new Image (new File(resources_path + "wormhole.png").toURI().toString()), grid[random_x][random_y]);
+        grid[random_x][random_y].setObject(wormhole);
     }
 
     //get the neighbours of the parameter tile.

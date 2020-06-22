@@ -75,7 +75,7 @@ public class MovableObject extends Object {
                     neighbours.get(0).setObject(this);
                     setTile(neighbours.get(0));
                 } else {
-                    collided = (Object) getCollision(neighbours.get(0));
+                    collided = getCollision(neighbours.get(0));
                 }
                 break;
             }
@@ -85,7 +85,7 @@ public class MovableObject extends Object {
                     neighbours.get(1).setObject(this);
                     setTile(neighbours.get(1));
                 } else {
-                    collided = (Object) getCollision(neighbours.get(1));
+                    collided = getCollision(neighbours.get(1));
                 }
                 break;
             }
@@ -95,7 +95,7 @@ public class MovableObject extends Object {
                     neighbours.get(2).setObject(this);
                     setTile(neighbours.get(2));
                 } else {
-                    collided = (Object) getCollision(neighbours.get(2));
+                    collided = getCollision(neighbours.get(2));
                 }
                 break;
             }
@@ -105,7 +105,7 @@ public class MovableObject extends Object {
                     neighbours.get(3).setObject(this);
                     setTile(neighbours.get(3));
                 } else {
-                    collided = (Object) getCollision(neighbours.get(3));
+                    collided = getCollision(neighbours.get(3));
                 }
                 break;
             }
@@ -124,24 +124,40 @@ public class MovableObject extends Object {
             if (collided instanceof Planet) {
                 ((Planet) collided).setVisited();
             }
+
+            if (collided instanceof Wormhole) {
+                Main.game_won = true;
+            }
         }
         this.direction = move_to;
     }
 
-    public Object getCollision (Tile got_to_tile) {
+    public Object getCollision (Tile go_to_tile) {
+        Object[] go_to_tile_object = go_to_tile.getObject();
         if (this instanceof User) {
-            if (got_to_tile.getObject() instanceof Comet) {
-                return got_to_tile.getObject();
-            }
+            for (Object object : go_to_tile_object) {
+                if (object instanceof Comet) {
+                    return object;
+                }
 
-            if (got_to_tile.getObject() instanceof Planet) {
-                return got_to_tile.getObject();
+                if (object instanceof Planet) {
+                    this.getTile().emptyTile();
+                    go_to_tile.setObject(this);
+                    this.setTile(go_to_tile);
+                    return object;
+                }
+
+                if (object instanceof Wormhole) {
+                    this.getTile().emptyTile();
+                    this.setTile(go_to_tile);
+                    return object;
+                }
             }
         }
 
         if (this instanceof Comet) {
-            if (got_to_tile.getObject() instanceof User) {
-                return got_to_tile.getObject();
+            if (go_to_tile_object[0] instanceof User) {
+                return go_to_tile_object[0];
             }
         }
         return null;
