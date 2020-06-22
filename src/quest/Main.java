@@ -153,25 +153,30 @@ public class Main extends Application {
         for(int i = 0; i < comets.length; i++) {
             int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
             int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            Comet comet = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
-            grid[posX][posY].setObject(comet);
-            comets[i] = comet;
+
+            while (!grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            }
+
+            comets[i] = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
+            grid[posX][posY].setObject(comets[i]);
         }
 
         //creating planets
         this.planets = new Planet[this.planet_count];
         for (int i = 0; i < planets.length; i++) {
-            int position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+            int posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
 
-            while (!grid[position_x][position_y].isAvailable()) {
-                position_x = ThreadLocalRandom.current().nextInt(1, X_TILES);
-                position_y = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            while (!grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
+                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
             }
             int random_image = ThreadLocalRandom.current().nextInt(1, 4);
 
-            planets[i] = new Planet(new Image(new File(this.resources_path + "planet0"+ random_image +".png").toURI().toString()), this.grid[position_x][position_y]);
-            this.grid[position_x][position_y].setObject(planets[i]);
+            planets[i] = new Planet(new Image(new File(this.resources_path + "planet0"+ random_image +".png").toURI().toString()), this.grid[posX][posY]);
+            this.grid[posX][posY].setObject(planets[i]);
         }
 
         //updating game.
