@@ -124,6 +124,10 @@ public class MovableObject extends Object {
             if (collided instanceof Planet) {
                 ((Planet) collided).setVisited();
             }
+
+            if (collided instanceof Wormhole) {
+                Main.game_won = true;
+            }
         }
         this.direction = move_to;
     }
@@ -139,6 +143,12 @@ public class MovableObject extends Object {
                 if (object instanceof Planet) {
                     this.getTile().emptyTile();
                     go_to_tile.setObject(this);
+                    this.setTile(go_to_tile);
+                    return object;
+                }
+
+                if (object instanceof Wormhole) {
+                    this.getTile().emptyTile();
                     this.setTile(go_to_tile);
                     return object;
                 }
