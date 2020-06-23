@@ -118,7 +118,7 @@ public class Main extends Application {
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
-        //create game screen.
+    //create game screen.
         StackPane root = new StackPane();
         root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         game = new Pane();
@@ -327,6 +327,7 @@ public class Main extends Application {
         game_over = false;
         game_won = false;
         score = -1;
+        all_planets_visited = false;
     }
 
     //update & Render
