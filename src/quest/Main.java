@@ -186,7 +186,6 @@ public class Main extends Application {
         //updating game.
         updateGame();
 
-
         //set all game objects in scene.
         root.getChildren().addAll(game, score_text, go_menu);
         return root;
@@ -206,7 +205,11 @@ public class Main extends Application {
                     @Override
                     public void run() {
                         score++;
-                        timedUpdate();
+
+                        for (Comet c :  comets) {
+                            c.update();
+                        }
+
                         updateGame();
                     }
                 });
@@ -250,9 +253,8 @@ public class Main extends Application {
 
         if(game_over) {
             result_text = "GAME OVER";
-        }
-        else if(game_won) {
-            result_text = "GAME CLEAR";
+        } else if(game_won) {
+            result_text = "GAME WON";
         }
 
         Label result = new Label(result_text);
@@ -292,7 +294,6 @@ public class Main extends Application {
         }
         wormhole = new Wormhole(new Image (new File(resources_path + "wormhole.png").toURI().toString()), grid[random_x][random_y]);
         grid[random_x][random_y].setObject(wormhole);
-
     }
 
     //get the neighbours of the parameter tile.
@@ -345,14 +346,6 @@ public class Main extends Application {
         game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size_height * 0.5));
         String text = "Score: " + score;
         score_text.setText(text);
-    }
-
-    //Update Object that update time based.
-    public void timedUpdate() {
-        //update comets.
-        for (Comet c :  comets) {
-            c.update();
-        }
     }
 
     public static void main(String[] args) {
