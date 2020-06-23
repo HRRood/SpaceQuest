@@ -15,8 +15,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import javafx.stage.Popup;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class Main extends Application {
     private int planet_count;
     private Planet[] planets;
 
-    private Popup popup;
+    private Pane go_menu;
 
     public static boolean game_over = false;
 
@@ -121,6 +119,9 @@ public class Main extends Application {
         game = new Pane();
         game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+        go_menu = new Pane();
+        go_menu.setVisible(false);
+
         //create score.
         String player_score = "Score: " + score;
         score_text = new Label(player_score);
@@ -177,10 +178,8 @@ public class Main extends Application {
         updateGame();
 
 
-
-
         //set all game objects in scene.
-        root.getChildren().addAll(game, score_text);
+        root.getChildren().addAll(game, score_text, go_menu);
         return root;
     }
 
@@ -207,10 +206,9 @@ public class Main extends Application {
 
         game_scene.setOnKeyPressed(event -> {
             if (game_over) {
+
                 SetupGameOverMenu();
-                if (!popup.isShowing()) {
-                    popup.show(primaryStage);
-                }
+
                 return;
             }
             user.handleKeyPressed(event.getCode());
@@ -220,37 +218,42 @@ public class Main extends Application {
 
     private void SetupGameOverMenu()
     {
-        //creating the popup.
-        popup = new Popup();
-        popup.setWidth(400);
-        popup.setHeight(300);
+        go_menu.setVisible(true);
 
         //announce label.
         Label background = new Label();
         background.setStyle(" -fx-background-color: green;");
-        background.setMinWidth(popup.getWidth());
-        background.setMinHeight(popup.getHeight());
+        background.setMinWidth(game.getWidth() / 3);
+        background.setMinHeight(game.getHeight() / 3);
+        background.setLayoutX(game.getWidth() / 3);
+        background.setLayoutY(game.getHeight() / 3);
 
         //result label.
         String result_text = "GAME OVER";
         Label result = new Label(result_text);
         result.setFont(new Font(25));
-        result.setMinWidth(popup.getWidth());
-        result.setMinHeight(popup.getHeight());
-        result.setLayoutX(result.getMinWidth() / 4);
-        result.setLayoutY(result.getMinWidth() / 2);
+        result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        result.setLayoutY(background.getLayoutY());
 
         //Score label.
         String score_text = "Your score: " + score;
         Label score = new Label(score_text);
         score.setFont(new Font(25));
-        score.setMinWidth(popup.getWidth());
-        score.setMinHeight(popup.getHeight());
-        score.setLayoutX(score.getMinWidth() / 4);
+        score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
 
-        //back to menu button.
+        Button home_button = new Button("Main Menu");
+        home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
+        home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        home_button.setLayoutY(background.getLayoutX());
+        home_button.setOnAction(event -> {
+            this.game_scene = new Scene(createMenu());
+            this.addHandlers();
+            this.primaryStage.setScene(this.menu_scene);
+           resetGame();
+        });
 
-        popup.getContent().addAll(background, result, score);
+        go_menu.getChildren().addAll(background, result, score, home_button);
     }
 
     //get the neighbours of the parameter tile.
@@ -277,6 +280,13 @@ public class Main extends Application {
         }
 
         return neighbors;
+    }
+
+    //resetting game values
+    private void resetGame()
+    {
+        game_over = false;
+        score = -1;
     }
 
     //update & Render
