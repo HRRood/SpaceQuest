@@ -218,7 +218,6 @@ public class Main extends Application {
 
         game_scene.setOnKeyPressed(event -> {
             if (game_over || game_won) {
-                setupGameOverMenu();
                 return;
             }
             user.handleKeyPressed(event.getCode());
@@ -234,6 +233,10 @@ public class Main extends Application {
                 setWormhole();
             }
             updateGame();
+
+            if (game_over || game_won) {
+                setupGameOverMenu();
+            }
         });
     }
 
