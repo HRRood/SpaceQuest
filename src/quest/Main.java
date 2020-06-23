@@ -206,7 +206,7 @@ public class Main extends Application {
                     @Override
                     public void run() {
                         score++;
-                        lateUpdate();
+                        timedUpdate();
                         updateGame();
                     }
                 });
@@ -215,6 +215,7 @@ public class Main extends Application {
 
         game_scene.setOnKeyPressed(event -> {
             if (game_over || game_won) {
+                setupGameOverMenu();
                 return;
             }
             user.handleKeyPressed(event.getCode());
@@ -233,6 +234,54 @@ public class Main extends Application {
         });
     }
 
+    private void setupGameOverMenu() {
+        go_menu.setVisible(true);
+
+        //announce label.
+        Label background = new Label();
+        background.setStyle(" -fx-background-color: green;");
+        background.setMinWidth(game.getWidth() / 3);
+        background.setMinHeight(game.getHeight() / 3);
+        background.setLayoutX(game.getWidth() / 3);
+        background.setLayoutY(game.getHeight() / 3);
+
+        //result label.
+        String result_text = "";
+
+        if(game_over) {
+            result_text = "GAME OVER";
+        }
+        else if(game_won) {
+            result_text = "GAME CLEAR";
+        }
+
+        Label result = new Label(result_text);
+        result.setFont(new Font(25));
+        result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        result.setLayoutY(background.getLayoutY());
+
+        //Score label.
+        String score_text = "Your score: " + score;
+        Label score = new Label(score_text);
+        score.setFont(new Font(25));
+        score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
+
+        Button home_button = new Button("Main Menu");
+        home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
+        home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        home_button.setLayoutY(background.getLayoutX());
+        home_button.setOnAction(event -> {
+            this.game_scene = new Scene(createMenu());
+            this.addHandlers();
+            this.primaryStage.setScene(this.menu_scene);
+            resetGame();
+        });
+
+        go_menu.getChildren().addAll(background, result, score, home_button);
+    }
+
+    //creating wormhole after all planets have been visited.
     private void setWormhole () {
         int random_x = ThreadLocalRandom.current().nextInt(0, X_TILES);
         int random_y = ThreadLocalRandom.current().nextInt(0, Y_TILES);
@@ -273,9 +322,9 @@ public class Main extends Application {
     }
 
     //resetting game values
-    private void resetGame()
-    {
+    private void resetGame() {
         game_over = false;
+        game_won = false;
         score = -1;
     }
 
@@ -299,7 +348,7 @@ public class Main extends Application {
     }
 
     //Update Object that update time based.
-    public void lateUpdate() {
+    public void timedUpdate() {
         //update comets.
         for (Comet c :  comets) {
             c.update();
