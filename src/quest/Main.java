@@ -48,22 +48,14 @@ public class Main extends Application {
     private Scene options_scene;
     private Scene menu_scene;
 
-
-    public static final int TILE_SIZE = 60;
     private Pane game;
     private Label score_text;
     private User user;
     private Integer score = -1;
 
-
-
     @Override
     public void start(Stage stage) throws Exception {
         this.game_options = new GameOptions();
-
-        this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
-        this.comets = new Comet[this.game_options.getCometCount()];
-        this.planets = new Planet[this.game_options.getPlanetCount()];
 
         this.menu_scene = this.createMenuScene();
         this.options_scene = this.createOptionsScene();
@@ -197,6 +189,10 @@ public class Main extends Application {
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
+        this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
+        this.comets = new Comet[this.game_options.getCometCount()];
+        this.planets = new Planet[this.game_options.getPlanetCount()];
+
         StackPane root = new StackPane();
         root.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
         game = new Pane();
@@ -211,7 +207,7 @@ public class Main extends Application {
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                Tile tile = new Tile(x, y, tile_background);
+                Tile tile = new Tile(x, y, this.game_options.getTileSize(), tile_background);
                 grid[x][y] = tile;
             }
         }
@@ -280,7 +276,7 @@ public class Main extends Application {
     //get the neighbours of the parameter tile.
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
-        Tile emptyTile = new Tile(-1, -1, null);
+        Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
 
         int[] points = new int[] {
                 0, -1, -1, 0, 1, 0, 0, 1

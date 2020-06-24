@@ -12,6 +12,7 @@ import java.util.List;
 public class Tile {
     private int position_x;
     private int position_y;
+    private int size;
     private boolean isAvailable = true;
     private Image background;
 
@@ -21,14 +22,17 @@ public class Tile {
     private Object object;
     private ImageView objectview;
 
-    private StackPane pane = new StackPane();
-    private Rectangle rect = new Rectangle(Main.TILE_SIZE+1, Main.TILE_SIZE+1);
+    private StackPane pane;
+    private Rectangle rect;
 
 
-    public Tile(int x, int y, Image background) {
+    public Tile(int x, int y, int size, Image background) {
         this.position_x = x;
         this.position_y = y;
+        this.size = size;
         this.background = background;
+        this.pane = new StackPane();
+        this.rect = new Rectangle(this.size + 1, this.size + 1);
 
         if (position_x == -1 || position_y == -1) {
             isAvailable = false;
@@ -42,8 +46,8 @@ public class Tile {
         }
         rect.setFill(new ImagePattern(this.background));
         rect.setStroke(Color.TRANSPARENT);
-        rect.setTranslateX(position_x * Main.TILE_SIZE);
-        rect.setTranslateY(position_y * Main.TILE_SIZE);
+        rect.setTranslateX(position_x * this.size);
+        rect.setTranslateY(position_y * this.size);
         this.pane.getChildren().add(rect);
     }
 
@@ -59,10 +63,10 @@ public class Tile {
         }
 
         objectview = new ImageView(object.getSprite());
-        objectview.setFitWidth(Main.TILE_SIZE * 0.8);
-        objectview.setFitHeight(Main.TILE_SIZE * 0.8);
-        objectview.setTranslateX(position_x * Main.TILE_SIZE);
-        objectview.setTranslateY(position_y * Main.TILE_SIZE);
+        objectview.setFitWidth(this.size * 0.8);
+        objectview.setFitHeight(this.size * 0.8);
+        objectview.setTranslateX(position_x * this.size);
+        objectview.setTranslateY(position_y * this.size);
         if (object instanceof MovableObject) {
             objectview.setRotate(((MovableObject) object).getDirection());
         }
