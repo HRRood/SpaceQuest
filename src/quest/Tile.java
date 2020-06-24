@@ -1,5 +1,6 @@
 package quest;
 
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -7,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 public class Tile {
@@ -19,18 +21,19 @@ public class Tile {
     private List<Tile> neighbours;
 
     private User user;
-    private Object object;
+    private Object[] object = new Object[2];
     private ImageView objectview;
+    private ImageView top_user_view;
 
     private StackPane pane;
     private Rectangle rect;
-
 
     public Tile(int x, int y, int size, Image background) {
         this.position_x = x;
         this.position_y = y;
         this.size = size;
         this.background = background;
+
         this.pane = new StackPane();
         this.rect = new Rectangle(this.size + 1, this.size + 1);
 
@@ -58,19 +61,35 @@ public class Tile {
 
     public void updateObject () {
         this.pane.getChildren().remove(objectview);
-        if (object == null) {
+        this.pane.getChildren().remove(top_user_view);
+        if (object[0] == null) {
             return;
         }
 
-        objectview = new ImageView(object.getSprite());
+        objectview = new ImageView(object[0].getSprite());
         objectview.setFitWidth(this.size * 0.8);
         objectview.setFitHeight(this.size * 0.8);
         objectview.setTranslateX(position_x * this.size);
         objectview.setTranslateY(position_y * this.size);
-        if (object instanceof MovableObject) {
-            objectview.setRotate(((MovableObject) object).getDirection());
+        if (object[0] instanceof MovableObject) {
+            objectview.setRotate(((MovableObject) object[0]).getDirection());
+        }
+        if (object[0] instanceof Planet && ((Planet) object[0]).isVisited()) {
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-0.5);
+            objectview.setEffect(colorAdjust);
         }
         this.pane.getChildren().add(objectview);
+
+        if (object[1] != null && object[1] instanceof User) {
+            top_user_view = new ImageView(object[1].getSprite());
+            top_user_view.setFitWidth(this.size * 0.8);
+            top_user_view.setFitHeight(this.size * 0.8);
+            top_user_view.setTranslateX(position_x * this.size);
+            top_user_view.setTranslateY(position_y * this.size);
+            top_user_view.setRotate(((MovableObject) object[1]).getDirection());
+            this.pane.getChildren().add(top_user_view);
+        }
     }
 
     public void setNeighbours(List<Tile> neighbours) {
@@ -94,14 +113,25 @@ public class Tile {
     }
 
     public void setObject(Object object) {
-        this.object = object;
         isAvailable = false;
+        if (this.object[0] == null) {
+            this.object[0] = object;
+        }
+        if (this.object[0] instanceof Planet && object instanceof User) {
+            this.object[1] = object;
+        }
     }
 
-    public void emptyTile()
-    {
-        this.object = null;
-        isAvailable = true;
+    public void emptyTile() {
+        if (this.object[1] != null) {
+            this.object[1] = null;
+        } else {
+            this.object[0] = null;
+            isAvailable = true;
+        }
     }
 
+    public Object[] getObject () {
+        return this.object;
+    }
 }

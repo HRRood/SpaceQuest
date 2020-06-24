@@ -9,13 +9,19 @@ public class Comet extends MovableObject {
     }
 
     //updating Comet
-    public void update()
-    {
+    public void update() {
 
         //get random location.
         int newPos = getRandom();
-        while (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
+        boolean loop_runing = true;
+        while (loop_runing) {
             newPos = getRandom();
+            if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
+                loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
+                Main.game_over = !loop_runing;
+            } else {
+                loop_runing = false;
+            }
         }
 
         //move
@@ -23,8 +29,7 @@ public class Comet extends MovableObject {
 
     }
 
-    private int getRandom()
-    {
+    private int getRandom() {
         return (int)(Math.random() * (3 + 1) + 0);
     }
 

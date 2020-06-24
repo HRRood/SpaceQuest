@@ -2,8 +2,6 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -13,12 +11,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +37,8 @@ public class Main extends Application {
     private Tile[][] grid;
     private Comet[] comets;
     private Planet[] planets;
+    private Wormhole wormhole;
+    private User user;
 
     private Stage stage;
     private Scene game_scene;
@@ -49,9 +46,13 @@ public class Main extends Application {
     private Scene menu_scene;
 
     private Pane game;
+    private Pane go_menu;
     private Label score_text;
-    private User user;
     private Integer score = -1;
+
+    public static boolean game_over = false;
+    public static boolean game_won = false;
+    public boolean all_planets_visited = false;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -175,7 +176,6 @@ public class Main extends Application {
             this.stage.setScene(this.menu_scene);
         });
 
-
         VBox options_box = new VBox(
                 title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
                 tile_size_label, tile_size, planet_count_label, planet_count,
@@ -195,14 +195,18 @@ public class Main extends Application {
 
         StackPane root = new StackPane();
         root.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
-        game = new Pane();
-        game.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
+        this.game = new Pane();
+        this.game.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
+        this.go_menu = new Pane();
+        this.go_menu.setVisible(false);
 
-        String player_score = "Score: " + score;
-        score_text = new Label(player_score);
-        score_text.setFont(new Font(38));
-        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
+        //create score.
+        String player_score = "Score: " + this.score;
+        this.score_text = new Label(player_score);
+        this.score_text.setFont(new Font(38));
+        StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
 
+        //create tiles with background + setting the neighbours of tiles.
         Image tile_background = new Image (new File(RESOURCE_PATH + "space-background.png").toURI().toString());
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
@@ -214,39 +218,57 @@ public class Main extends Application {
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                grid[x][y].setNeighbours(getNeighbours(grid[x][y]));
+                grid[x][y].setNeighbours(this.getNeighbours(grid[x][y]));
             }
         }
 
-        user = new User(new Image (new File(RESOURCE_PATH + "spaceship.png").toURI().toString()), grid[0][0], "up");
-        grid[0][0].setObject(user);
+        //create player.
+        Image user_image = new Image (
+            new File(RESOURCE_PATH + "spaceship.png").toURI().toString()
+        );
+        this.user = new User(user_image, grid[0][0], "up");
+        this.grid[0][0].setObject(this.user);
 
         //creating Comets.
-        for(int i = 0; i < comets.length; i++)
-        {
-            int posX = getRandom(1, this.game_options.getXTileCount() -1);
-            int posY = getRandom(1, this.game_options.getYTileCount() -1);
-            Comet comet = new Comet(new Image (new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()), grid[posX][posY]);
-            grid[posX][posY].setObject(comet);
-            comets[i] = comet;
+        Image comet_image = new Image (
+                new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()
+        );
+        for(int i = 0; i < this.comets.length; i++) {
+            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
+
+            while (!this.grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
+            }
+
+            this.comets[i] = new Comet(comet_image, grid[posX][posY]);
+            this.grid[posX][posY].setObject(this.comets[i]);
         }
 
-        for (Planet planet : this.planets) {
-            int position_x = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
-            int position_y = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
-            Tile planet_tile = this.grid[position_x][position_y];
-            planet = new Planet(
-                    new Image(new File(RESOURCE_PATH + "planet_unknown.png").toURI().toString()),
-                    new Image(new File(RESOURCE_PATH + "planet_earth.png").toURI().toString()),
-                    planet_tile
+        //creating planets
+        for (int i = 0; i < this.planets.length; i++) {
+            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
+
+            while (!grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
+            }
+
+            int random_image_index = ThreadLocalRandom.current().nextInt(1, 4);
+            Image planet_image = new Image(
+                    new File(RESOURCE_PATH + "planet0" + random_image_index +".png").toURI().toString()
             );
-            planet_tile.setObject(planet);
+
+            this.planets[i] = new Planet(planet_image, this.grid[posX][posY]);
+            this.grid[posX][posY].setObject(this.planets[i]);
         }
 
-        updateGame();
+        //updating game.
+        this.updateGame();
 
-        root.getChildren().addAll(game, score_text);
-
+        root.getChildren().addAll(this.game, this.score_text, this.go_menu);
         return root;
     }
 
@@ -256,11 +278,19 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if (Main.game_over || Main.game_won) {
+                    timer.cancel();
+                    return;
+                }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         score++;
-                        lateUpdate();
+
+                        for (Comet c : comets) {
+                            c.update();
+                        }
+
                         updateGame();
                     }
                 });
@@ -268,9 +298,91 @@ public class Main extends Application {
         }, 0, 1000);
 
         this.game_scene.setOnKeyPressed(event -> {
+            if (Main.game_over || Main.game_won) {
+                return;
+            }
             this.user.handleKeyPressed(event.getCode());
+            int planets_visited = 0;
+            for (Planet planet : this.planets) {
+                if (planet.isVisited()) {
+                    planets_visited++;
+                }
+            }
+
+            if (!this.all_planets_visited && planets_visited == this.planets.length) {
+                this.all_planets_visited = true;
+                this.setWormhole();
+            }
             this.updateGame();
+
+            if (Main.game_over || Main.game_won) {
+                this.setupGameOverMenu();
+            }
         });
+    }
+
+    private void setupGameOverMenu() {
+        this.go_menu.setVisible(true);
+
+        //announce label.
+        Label background = new Label();
+        background.setStyle(" -fx-background-color: green;");
+        background.setMinWidth(this.game.getWidth() / 3);
+        background.setMinHeight(this.game.getHeight() / 3);
+        background.setLayoutX(this.game.getWidth() / 3);
+        background.setLayoutY(this.game.getHeight() / 3);
+
+        //result label.
+        String result_text = "";
+
+        if(Main.game_over) {
+            result_text = "GAME OVER";
+        } else if(Main.game_won) {
+            result_text = "GAME WON";
+        }
+
+        Label result = new Label(result_text);
+        result.setFont(new Font(25));
+        result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        result.setLayoutY(background.getLayoutY());
+
+        //Score label.
+        String score_text = "Your score: " + this.score;
+        Label score = new Label(score_text);
+        score.setFont(new Font(25));
+        score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
+
+        Button home_button = new Button("Main Menu");
+        home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
+        home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
+        home_button.setLayoutY(background.getLayoutX());
+        home_button.setOnAction(event -> {
+            this.game_scene = this.createMenuScene();
+            this.addHandlers();
+            this.stage.setScene(this.menu_scene);
+            resetGame();
+        });
+
+        this.go_menu.getChildren().addAll(background, result, score, home_button);
+    }
+
+    //creating wormhole after all planets have been visited.
+    private void setWormhole () {
+        int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
+        int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
+
+        while (!this.grid[random_x][random_y].isAvailable()) {
+            random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
+            random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
+        }
+
+        Image wormhole_image = new Image (
+            new File(RESOURCE_PATH + "wormhole.png").toURI().toString()
+        );
+
+        this.wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
+        this.grid[random_x][random_y].setObject(this.wormhole);
     }
 
     //get the neighbours of the parameter tile.
@@ -290,7 +402,7 @@ public class Main extends Application {
             int newY = tile.getPosition_y() + dy;
 
             if (newX >= 0 && newX < this.game_options.getXTileCount() && newY >= 0 && newY < this.game_options.getYTileCount()) {
-                neighbors.add(grid[newX][newY]);
+                neighbors.add(this.grid[newX][newY]);
             } else {
                 neighbors.add(emptyTile);
             }
@@ -299,37 +411,32 @@ public class Main extends Application {
         return neighbors;
     }
 
-    //get a random number between a min & a max.
-    private int getRandom(int min, int max)   {
-        int temp = (int)(Math.random() * (max - min + 1) + min);
-        return temp;
+    //resetting game values
+    private void resetGame() {
+        Main.game_over = false;
+        Main.game_won = false;
+        this.score = -1;
+        this.all_planets_visited = false;
     }
 
     //update & Render
     public void updateGame() {
-        if (!game.getChildren().isEmpty()) {
-            game.getChildren().clear();
+        if (!this.game.getChildren().isEmpty()) {
+            this.game.getChildren().clear();
         }
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                game.getChildren().add(grid[x][y].getPane());
+                this.game.getChildren().add(this.grid[x][y].getPane());
             }
         }
 
         int game_size = this.game_options.getTileSize() * this.game_options.getXTileCount();
+
         game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
         game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
-        String text = "Score: " + score;
-        score_text.setText(text);
-    }
 
-    //Update Object that update time based.
-    public void lateUpdate() {
-        //update comets.
-        for (Comet c :  comets) {
-            c.update();
-        }
+        this.score_text.setText("Score: " + this.score);
     }
 
     public static void main(String[] args) {
