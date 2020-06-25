@@ -14,6 +14,7 @@ import java.util.List;
 public class Tile {
     private int position_x;
     private int position_y;
+    private int size;
     private boolean isAvailable = true;
     private Image background;
 
@@ -24,14 +25,17 @@ public class Tile {
     private ImageView objectview;
     private ImageView top_user_view;
 
-    private StackPane pane = new StackPane();
-    private Rectangle rect = new Rectangle(Main.TILE_SIZE + 1, Main.TILE_SIZE + 1);
+    private StackPane pane;
+    private Rectangle rect;
 
-
-    public Tile(int x, int y, Image background) {
+    public Tile(int x, int y, int size, Image background) {
         this.position_x = x;
         this.position_y = y;
+        this.size = size;
         this.background = background;
+
+        this.pane = new StackPane();
+        this.rect = new Rectangle(this.size + 1, this.size + 1);
 
         if (position_x == -1 || position_y == -1) {
             isAvailable = false;
@@ -45,8 +49,8 @@ public class Tile {
         }
         rect.setFill(new ImagePattern(this.background));
         rect.setStroke(Color.TRANSPARENT);
-        rect.setTranslateX(position_x * Main.TILE_SIZE);
-        rect.setTranslateY(position_y * Main.TILE_SIZE);
+        rect.setTranslateX(position_x * this.size);
+        rect.setTranslateY(position_y * this.size);
         this.pane.getChildren().add(rect);
     }
 
@@ -63,10 +67,10 @@ public class Tile {
         }
 
         objectview = new ImageView(object[0].getSprite());
-        objectview.setFitWidth(Main.TILE_SIZE * 0.8);
-        objectview.setFitHeight(Main.TILE_SIZE * 0.8);
-        objectview.setTranslateX(position_x * Main.TILE_SIZE);
-        objectview.setTranslateY(position_y * Main.TILE_SIZE);
+        objectview.setFitWidth(this.size * 0.8);
+        objectview.setFitHeight(this.size * 0.8);
+        objectview.setTranslateX(position_x * this.size);
+        objectview.setTranslateY(position_y * this.size);
         if (object[0] instanceof MovableObject) {
             objectview.setRotate(((MovableObject) object[0]).getDirection());
         }
@@ -79,10 +83,10 @@ public class Tile {
 
         if (object[1] != null && object[1] instanceof User) {
             top_user_view = new ImageView(object[1].getSprite());
-            top_user_view.setFitWidth(Main.TILE_SIZE * 0.8);
-            top_user_view.setFitHeight(Main.TILE_SIZE * 0.8);
-            top_user_view.setTranslateX(position_x * Main.TILE_SIZE);
-            top_user_view.setTranslateY(position_y * Main.TILE_SIZE);
+            top_user_view.setFitWidth(this.size * 0.8);
+            top_user_view.setFitHeight(this.size * 0.8);
+            top_user_view.setTranslateX(position_x * this.size);
+            top_user_view.setTranslateY(position_y * this.size);
             top_user_view.setRotate(((MovableObject) object[1]).getDirection());
             this.pane.getChildren().add(top_user_view);
         }

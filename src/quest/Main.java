@@ -6,12 +6,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -24,170 +24,251 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    String resources_path = "src/quest/Resources/";
+    private static final String RESOURCE_PATH = "src/quest/Resources/";
+    private static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+    private static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+    private static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
+    private static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
+    private static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
+    private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
 
-    public static final int TILE_SIZE = 60;
-    private static final int SCREEN_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    private static final int SCREEN_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight() ;
+    private GameOptions game_options;
 
-    private static final int X_TILES = 15;
-    private static final int Y_TILES = 15;
+    private Tile[][] grid;
+    private Comet[] comets;
+    private Planet[] planets;
+    private Wormhole wormhole;
+    private User user;
 
-    private Stage primaryStage;
+    private Stage stage;
     private Scene game_scene;
+    private Scene options_scene;
     private Scene menu_scene;
 
     private Pane game;
-    private StackPane menu;
-    private Tile[][] grid = new Tile[X_TILES][Y_TILES];
-    private Label score_text;
-
-    private User user;
-
-    private Integer score = -1;
-
-    private int comet_number = 5;
-    private Comet[] comets = new Comet[comet_number];
-
-    private int planet_count = 5;
-    private Planet[] planets = new Planet[planet_count];
-
-    private Wormhole wormhole;
-
     private Pane go_menu;
+    private Label score_text;
+    private Integer score = -1;
 
     public static boolean game_over = false;
     public static boolean game_won = false;
-
     public boolean all_planets_visited = false;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        menu_scene = new Scene(createMenu());
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Space Quest");
-        this.primaryStage.setScene(menu_scene);
-        this.primaryStage.show();
+    public void start(Stage stage) throws Exception {
+        this.game_options = new GameOptions();
+
+        this.menu_scene = this.createMenuScene();
+        this.options_scene = this.createOptionsScene();
+
+        this.stage = stage;
+        this.stage.setTitle("Space Quest");
+        this.stage.setScene(this.menu_scene);
+        this.stage.setMaximized(true);
+        this.stage.show();
     }
 
     @Override
     public void stop() throws Exception {
-        this.exitApplication();
+        this.stage.close();
     }
 
     //creates the menu.
-    private Parent createMenu () {
-        this.menu = new StackPane();
-        this.menu.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
+    private Scene createMenuScene() {
         Button start_button = new Button("Start Game");
-        start_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         start_button.setOnAction(event -> {
             this.game_scene = new Scene(createGame());
             this.addHandlers();
-            this.primaryStage.setScene(this.game_scene);
+            this.stage.setScene(this.game_scene);
         });
 
         Button options_button = new Button("Game Options");
-        options_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        options_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         options_button.setOnAction(event -> {
-            // TODO optionsButton
+            this.stage.setScene(this.options_scene);
         });
 
         Button exit_button = new Button("Exit");
-        exit_button.setMinSize(SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.1);
+        exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exit_button.setOnAction(event -> {
-            this.exitApplication();
+            try {
+                this.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
-        VBox menu_buttons = new VBox();
+        VBox menu_buttons = new VBox(start_button, options_button, exit_button);
         menu_buttons.setSpacing(10);
-        menu_buttons.setPadding(new Insets(0, 20, 10, 20));
-        menu_buttons.getChildren().addAll(start_button, options_button, exit_button);
         menu_buttons.setAlignment(Pos.CENTER);
 
-        this.menu.getChildren().add(menu_buttons);
-        this.menu.setBackground(
-            new Background(
-                new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)
-            )
-        );
+        return new Scene(menu_buttons, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
+    }
 
-        return this.menu;
+    private Scene createOptionsScene() {
+        Text title = new Text("Game Options");
+        title.setFont(Font.font(20));
+
+        Label x_tile_count_label = new Label(
+                String.format("Tiles in width: %d", this.game_options.getXTileCount())
+        );
+        Slider x_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
+        x_tile_count.setMaxWidth(STAGE_WIDTH * .3);
+        x_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setXTileCount(newValue.intValue());
+            x_tile_count_label.setText(
+                String.format("Tiles in width: %d", this.game_options.getXTileCount())
+            );
+        });
+
+        Label y_tile_count_label = new Label(
+                String.format("Tiles in height: %d", this.game_options.getYTileCount())
+        );
+        Slider y_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
+        y_tile_count.setMaxWidth(STAGE_WIDTH * .3);
+        y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setYTileCount(newValue.intValue());
+            y_tile_count_label.setText(
+                    String.format("Tiles in height: %d", this.game_options.getYTileCount())
+            );
+        });
+
+        Label tile_size_label = new Label(
+                String.format("Tile size: %d", this.game_options.getTileSize())
+        );
+        Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
+        tile_size.setMaxWidth(STAGE_WIDTH * .3);
+        tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setTileSize(newValue.intValue());
+            tile_size_label.setText(
+                    String.format("Tile size: %d", this.game_options.getTileSize())
+            );
+        });
+
+        Label planet_count_label = new Label(
+                String.format("Planets: %d", this.game_options.getPlanetCount())
+        );
+        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
+        planet_count.setMaxWidth(STAGE_WIDTH * .3);
+        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setPlanetCount(newValue.intValue());
+            planet_count_label.setText(
+                    String.format("Planets: %d", this.game_options.getPlanetCount())
+            );
+        });
+
+        Label comet_count_label = new Label(
+                String.format("Comets: %d", this.game_options.getCometCount())
+        );
+        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
+        comet_count.setMaxWidth(STAGE_WIDTH * .3);
+        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setCometCount(newValue.intValue());
+            comet_count_label.setText(
+                    String.format("Comets: %d", this.game_options.getCometCount())
+            );
+        });
+
+        Button save_and_go_back = new Button("Save and go back");
+        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        save_and_go_back.setOnAction(event -> {
+            this.stage.setScene(this.menu_scene);
+        });
+
+        VBox options_box = new VBox(
+                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
+                tile_size_label, tile_size, planet_count_label, planet_count,
+                comet_count_label, comet_count, save_and_go_back
+        );
+        options_box.setSpacing(10);
+        options_box.setAlignment(Pos.CENTER);
+
+        return new Scene(options_box, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
     private Parent createGame() {
-    //create game screen.
-        StackPane root = new StackPane();
-        root.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        game = new Pane();
-        game.setPrefSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
+        this.comets = new Comet[this.game_options.getCometCount()];
+        this.planets = new Planet[this.game_options.getPlanetCount()];
 
-        go_menu = new Pane();
-        go_menu.setVisible(false);
+        StackPane root = new StackPane();
+        root.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
+        this.game = new Pane();
+        this.game.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
+        this.go_menu = new Pane();
+        this.go_menu.setVisible(false);
 
         //create score.
-        String player_score = "Score: " + score;
-        score_text = new Label(player_score);
-        score_text.setFont(new Font(38));
-        StackPane.setAlignment(score_text, Pos.TOP_CENTER);
+        String player_score = "Score: " + this.score;
+        this.score_text = new Label(player_score);
+        this.score_text.setFont(new Font(38));
+        StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
 
         //create tiles with background + setting the neighbours of tiles.
-        Image tile_background = new Image (new File(resources_path + "space-background.png").toURI().toString());
+        Image tile_background = new Image (new File(RESOURCE_PATH + "space-background.png").toURI().toString());
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                Tile tile = new Tile(x, y, tile_background);
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
+                Tile tile = new Tile(x, y, this.game_options.getTileSize(), tile_background);
                 grid[x][y] = tile;
             }
         }
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                grid[x][y].setNeighbours(getNeighbours(grid[x][y]));
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
+                grid[x][y].setNeighbours(this.getNeighbours(grid[x][y]));
             }
         }
 
         //create player.
-        user = new User(new Image (new File(resources_path + "spaceship.png").toURI().toString()), grid[0][0], "up");
-        grid[0][0].setObject(user);
+        Image user_image = new Image (
+            new File(RESOURCE_PATH + "spaceship.png").toURI().toString()
+        );
+        this.user = new User(user_image, grid[0][0], "up");
+        this.grid[0][0].setObject(this.user);
 
         //creating Comets.
-        for(int i = 0; i < comets.length; i++) {
-            int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int posY = ThreadLocalRandom.current().nextInt(1, X_TILES);
+        Image comet_image = new Image (
+                new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()
+        );
+        for(int i = 0; i < this.comets.length; i++) {
+            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
 
-            while (!grid[posX][posY].isAvailable()) {
-                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
-                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+            while (!this.grid[posX][posY].isAvailable()) {
+                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
             }
 
-            comets[i] = new Comet(new Image (new File(resources_path + "Meteorites.png").toURI().toString()), grid[posX][posY]);
-            grid[posX][posY].setObject(comets[i]);
+            this.comets[i] = new Comet(comet_image, grid[posX][posY]);
+            this.grid[posX][posY].setObject(this.comets[i]);
         }
 
         //creating planets
-        this.planets = new Planet[this.planet_count];
-        for (int i = 0; i < planets.length; i++) {
-            int posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
-            int posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+        for (int i = 0; i < this.planets.length; i++) {
+            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
 
             while (!grid[posX][posY].isAvailable()) {
-                posX = ThreadLocalRandom.current().nextInt(1, X_TILES);
-                posY = ThreadLocalRandom.current().nextInt(1, Y_TILES);
+                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
+                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
             }
-            int random_image = ThreadLocalRandom.current().nextInt(1, 4);
 
-            planets[i] = new Planet(new Image(new File(this.resources_path + "planet0"+ random_image +".png").toURI().toString()), this.grid[posX][posY]);
-            this.grid[posX][posY].setObject(planets[i]);
+            int random_image_index = ThreadLocalRandom.current().nextInt(1, 4);
+            Image planet_image = new Image(
+                    new File(RESOURCE_PATH + "planet0" + random_image_index +".png").toURI().toString()
+            );
+
+            this.planets[i] = new Planet(planet_image, this.grid[posX][posY]);
+            this.grid[posX][posY].setObject(this.planets[i]);
         }
 
         //updating game.
-        updateGame();
+        this.updateGame();
 
-        //set all game objects in scene.
-        root.getChildren().addAll(game, score_text, go_menu);
+        root.getChildren().addAll(this.game, this.score_text, this.go_menu);
         return root;
     }
 
@@ -197,7 +278,7 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (game_over || game_won) {
+                if (Main.game_over || Main.game_won) {
                     timer.cancel();
                     return;
                 }
@@ -206,7 +287,7 @@ public class Main extends Application {
                     public void run() {
                         score++;
 
-                        for (Comet c :  comets) {
+                        for (Comet c : comets) {
                             c.update();
                         }
 
@@ -216,47 +297,47 @@ public class Main extends Application {
             }
         }, 0, 1000);
 
-        game_scene.setOnKeyPressed(event -> {
-            if (game_over || game_won) {
+        this.game_scene.setOnKeyPressed(event -> {
+            if (Main.game_over || Main.game_won) {
                 return;
             }
-            user.handleKeyPressed(event.getCode());
+            this.user.handleKeyPressed(event.getCode());
             int planets_visited = 0;
-            for (Planet planet : planets) {
+            for (Planet planet : this.planets) {
                 if (planet.isVisited()) {
                     planets_visited++;
                 }
             }
 
-            if (!all_planets_visited && planets_visited == planets.length) {
-                all_planets_visited = true;
-                setWormhole();
+            if (!this.all_planets_visited && planets_visited == this.planets.length) {
+                this.all_planets_visited = true;
+                this.setWormhole();
             }
-            updateGame();
+            this.updateGame();
 
-            if (game_over || game_won) {
-                setupGameOverMenu();
+            if (Main.game_over || Main.game_won) {
+                this.setupGameOverMenu();
             }
         });
     }
 
     private void setupGameOverMenu() {
-        go_menu.setVisible(true);
+        this.go_menu.setVisible(true);
 
         //announce label.
         Label background = new Label();
         background.setStyle(" -fx-background-color: green;");
-        background.setMinWidth(game.getWidth() / 3);
-        background.setMinHeight(game.getHeight() / 3);
-        background.setLayoutX(game.getWidth() / 3);
-        background.setLayoutY(game.getHeight() / 3);
+        background.setMinWidth(this.game.getWidth() / 3);
+        background.setMinHeight(this.game.getHeight() / 3);
+        background.setLayoutX(this.game.getWidth() / 3);
+        background.setLayoutY(this.game.getHeight() / 3);
 
         //result label.
         String result_text = "";
 
-        if(game_over) {
+        if(Main.game_over) {
             result_text = "GAME OVER";
-        } else if(game_won) {
+        } else if(Main.game_won) {
             result_text = "GAME WON";
         }
 
@@ -266,7 +347,7 @@ public class Main extends Application {
         result.setLayoutY(background.getLayoutY());
 
         //Score label.
-        String score_text = "Your score: " + score;
+        String score_text = "Your score: " + this.score;
         Label score = new Label(score_text);
         score.setFont(new Font(25));
         score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
@@ -277,32 +358,37 @@ public class Main extends Application {
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         home_button.setLayoutY(background.getLayoutX());
         home_button.setOnAction(event -> {
-            this.game_scene = new Scene(createMenu());
+            this.game_scene = this.createMenuScene();
             this.addHandlers();
-            this.primaryStage.setScene(this.menu_scene);
+            this.stage.setScene(this.menu_scene);
             resetGame();
         });
 
-        go_menu.getChildren().addAll(background, result, score, home_button);
+        this.go_menu.getChildren().addAll(background, result, score, home_button);
     }
 
     //creating wormhole after all planets have been visited.
     private void setWormhole () {
-        int random_x = ThreadLocalRandom.current().nextInt(0, X_TILES);
-        int random_y = ThreadLocalRandom.current().nextInt(0, Y_TILES);
+        int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
+        int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
 
-        while (!grid[random_x][random_y].isAvailable()) {
-            random_x = ThreadLocalRandom.current().nextInt(0, X_TILES);
-            random_y = ThreadLocalRandom.current().nextInt(0, Y_TILES);
+        while (!this.grid[random_x][random_y].isAvailable()) {
+            random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
+            random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
         }
-        wormhole = new Wormhole(new Image (new File(resources_path + "wormhole.png").toURI().toString()), grid[random_x][random_y]);
-        grid[random_x][random_y].setObject(wormhole);
+
+        Image wormhole_image = new Image (
+            new File(RESOURCE_PATH + "wormhole.png").toURI().toString()
+        );
+
+        this.wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
+        this.grid[random_x][random_y].setObject(this.wormhole);
     }
 
     //get the neighbours of the parameter tile.
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
-        Tile emptyTile = new Tile(-1, -1, null);
+        Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
 
         int[] points = new int[] {
                 0, -1, -1, 0, 1, 0, 0, 1
@@ -315,8 +401,8 @@ public class Main extends Application {
             int newX = tile.getPosition_x() + dx;
             int newY = tile.getPosition_y() + dy;
 
-            if (newX >= 0 && newX < X_TILES && newY >= 0 && newY < Y_TILES) {
-                neighbors.add(grid[newX][newY]);
+            if (newX >= 0 && newX < this.game_options.getXTileCount() && newY >= 0 && newY < this.game_options.getYTileCount()) {
+                neighbors.add(this.grid[newX][newY]);
             } else {
                 neighbors.add(emptyTile);
             }
@@ -327,38 +413,33 @@ public class Main extends Application {
 
     //resetting game values
     private void resetGame() {
-        game_over = false;
-        game_won = false;
-        score = -1;
-        all_planets_visited = false;
+        Main.game_over = false;
+        Main.game_won = false;
+        this.score = -1;
+        this.all_planets_visited = false;
     }
 
     //update & Render
     public void updateGame() {
-        if (!game.getChildren().isEmpty()) {
-            game.getChildren().clear();
+        if (!this.game.getChildren().isEmpty()) {
+            this.game.getChildren().clear();
         }
 
-        for (int y = 0; y < Y_TILES; y++) {
-            for (int x = 0; x < X_TILES; x++) {
-                game.getChildren().add(grid[x][y].getPane());
+        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
+            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
+                this.game.getChildren().add(this.grid[x][y].getPane());
             }
         }
-        int game_size_width = TILE_SIZE * X_TILES;
-        int game_size_height = TILE_SIZE * Y_TILES;
-        game.setTranslateX((SCREEN_WIDTH * 0.5) - (game_size_width * 0.5));
-        game.setTranslateY((SCREEN_HEIGHT * 0.5) - (game_size_height * 0.5));
-        String text = "Score: " + score;
-        score_text.setText(text);
+
+        int game_size = this.game_options.getTileSize() * this.game_options.getXTileCount();
+
+        game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
+        game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
+
+        this.score_text.setText("Score: " + this.score);
     }
 
     public static void main(String[] args) {
-        launch(args);
-    }
-
-    private void exitApplication() {
-        // TODO ? save to filesystem
-
-        this.primaryStage.close();
+        Application.launch(args);
     }
 }
