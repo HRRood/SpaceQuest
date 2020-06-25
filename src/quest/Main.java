@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -75,7 +76,9 @@ public class Main extends Application {
 
     //creates the menu.
     private Scene createMenuScene() {
-        Button start_button = new Button("Start Game");
+        Image start_BTN_image = new Image (new File(RESOURCE_PATH + "Menu/Start_BTN.png").toURI().toString());
+        Button start_button = new Button("", new ImageView(start_BTN_image));
+        start_button.setStyle("-fx-background-color: transparent;");
         start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         start_button.setOnAction(event -> {
             this.game_scene = new Scene(createGame());
@@ -89,7 +92,9 @@ public class Main extends Application {
             this.stage.setScene(this.options_scene);
         });
 
-        Button exit_button = new Button("Exit");
+        Image exit_BTN_image = new Image (new File(RESOURCE_PATH + "Menu/Exit_BTN.png").toURI().toString());
+        Button exit_button = new Button("", new ImageView(exit_BTN_image));
+        exit_button.setStyle("-fx-background-color: transparent;");
         exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exit_button.setOnAction(event -> {
             try {
@@ -200,9 +205,12 @@ public class Main extends Application {
         this.go_menu = new Pane();
         this.go_menu.setVisible(false);
 
-        //create score.
-        String player_score = "Score: " + this.score;
-        this.score_text = new Label(player_score);
+        //create score
+        Image score_Image = new Image (new File(RESOURCE_PATH + "Menu/Score.png").toURI().toString());
+        ImageView score_view = new ImageView(score_Image);
+        score_view.setFitHeight(38);
+        String player_score = ": " + this.score;
+        this.score_text = new Label(player_score, score_view);
         this.score_text.setFont(new Font(38));
         StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
 
@@ -324,9 +332,15 @@ public class Main extends Application {
     private void setupGameOverMenu() {
         this.go_menu.setVisible(true);
 
+        int game_width = (game_options.getTileSize() * game_options.getXTileCount()) / 2;
+        int game_height = (game_options.getTileSize() * game_options.getYTileCount()) / 2;
+
         //announce label.
-        Label background = new Label();
-        background.setStyle(" -fx-background-color: green;");
+        Image bg_image = new Image (new File(RESOURCE_PATH + "Menu/Window.png").toURI().toString());
+        ImageView bgv = new ImageView(bg_image);
+        bgv.setFitWidth(this.game.getWidth() / 3);
+        bgv.setFitHeight(this.game.getHeight() / 3);
+        Label background = new Label("",bgv);
         background.setMinWidth(this.game.getWidth() / 3);
         background.setMinHeight(this.game.getHeight() / 3);
         background.setLayoutX(this.game.getWidth() / 3);
@@ -343,6 +357,7 @@ public class Main extends Application {
 
         Label result = new Label(result_text);
         result.setFont(new Font(25));
+        result.setTextFill(Color.WHITE);
         result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         result.setLayoutY(background.getLayoutY());
 
@@ -350,13 +365,21 @@ public class Main extends Application {
         String score_text = "Your score: " + this.score;
         Label score = new Label(score_text);
         score.setFont(new Font(25));
+        score.setTextFill(Color.WHITE);
         score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
 
-        Button home_button = new Button("Main Menu");
-        home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
+        Image home_img = new Image (new File(RESOURCE_PATH + "Menu/Table.png").toURI().toString());
+        ImageView btnV = new ImageView(home_img);
+        btnV.setFitHeight(background.getMinHeight() * 0.2);
+        btnV.setFitWidth(background.getMinWidth() * 0.2);
+        Button home_button = new Button("Main Menu", btnV);
+        home_button.setContentDisplay(ContentDisplay.CENTER);
+        home_button.setStyle("-fx-background-color: transparent;");
+        home_button.setTextFill(Color.WHITE);
+        home_button.setMinSize(background.getMinWidth() * 0.2, background.getHeight() * 0.2);
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        home_button.setLayoutY(background.getLayoutX());
+        home_button.setLayoutY(background.getLayoutY() * 1.7);
         home_button.setOnAction(event -> {
             this.game_scene = this.createMenuScene();
             this.addHandlers();
@@ -436,7 +459,7 @@ public class Main extends Application {
         game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
         game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
 
-        this.score_text.setText("Score: " + this.score);
+        this.score_text.setText(": " + this.score);
     }
 
     public static void main(String[] args) {
