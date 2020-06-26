@@ -153,10 +153,33 @@ public class Main extends Application {
         save_and_go_back.setOnAction(event -> {
             this.stage.setScene(this.menu_scene);
         });
+        Label planet_count_label = new Label(
+                String.format("Planets: %d", this.game_options.getPlanetCount())
+        );
+        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
+        planet_count.setMaxWidth(STAGE_WIDTH * .3);
+        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setPlanetCount(newValue.intValue());
+            planet_count_label.setText(
+                String.format("Planets: %d", this.game_options.getPlanetCount())
+            );
+        });
+
+        Label comet_count_label = new Label(
+                String.format("Comets: %d", this.game_options.getCometCount())
+        );
+        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
+        comet_count.setMaxWidth(STAGE_WIDTH * .3);
+        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.game_options.setCometCount(newValue.intValue());
+            comet_count_label.setText(
+                String.format("Comets: %d", this.game_options.getCometCount())
+            );
+        });
 
         VBox options_box = new VBox(
-            title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
-            tile_size_label, tile_size, save_and_go_back
+                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count, tile_size_label,
+                tile_size, planet_count_label, planet_count, comet_count_label, comet_count, save_and_go_back
         );
         options_box.setSpacing(10);
         options_box.setAlignment(Pos.CENTER);
