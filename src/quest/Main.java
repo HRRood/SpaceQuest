@@ -2,7 +2,6 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import sun.tools.jconsole.JConsole;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
 
@@ -75,6 +76,9 @@ public class Main extends Application {
 
     //creates the menu.
     private Scene createMenuScene() {
+        Text text = new Text("Space Quest");
+        text.setFont(Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130));
+
         Button start_button = new Button("Start Game");
         start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         start_button.setOnAction(event -> {
@@ -99,7 +103,7 @@ public class Main extends Application {
             }
         });
 
-        VBox menu_buttons = new VBox(start_button, options_button, exit_button);
+        VBox menu_buttons = new VBox(text, start_button, options_button, exit_button);
         menu_buttons.setSpacing(10);
         menu_buttons.setAlignment(Pos.CENTER);
 
@@ -130,43 +134,19 @@ public class Main extends Application {
         y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setYTileCount(newValue.intValue());
             y_tile_count_label.setText(
-                    String.format("Tiles in height: %d", this.game_options.getYTileCount())
+                String.format("Tiles in height: %d", this.game_options.getYTileCount())
             );
         });
 
         Label tile_size_label = new Label(
-                String.format("Tile size: %d", this.game_options.getTileSize())
+            String.format("Tile size: %d", this.game_options.getTileSize())
         );
         Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
         tile_size.setMaxWidth(STAGE_WIDTH * .3);
         tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setTileSize(newValue.intValue());
             tile_size_label.setText(
-                    String.format("Tile size: %d", this.game_options.getTileSize())
-            );
-        });
-
-        Label planet_count_label = new Label(
-                String.format("Planets: %d", this.game_options.getPlanetCount())
-        );
-        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
-        planet_count.setMaxWidth(STAGE_WIDTH * .3);
-        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setPlanetCount(newValue.intValue());
-            planet_count_label.setText(
-                    String.format("Planets: %d", this.game_options.getPlanetCount())
-            );
-        });
-
-        Label comet_count_label = new Label(
-                String.format("Comets: %d", this.game_options.getCometCount())
-        );
-        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
-        comet_count.setMaxWidth(STAGE_WIDTH * .3);
-        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setCometCount(newValue.intValue());
-            comet_count_label.setText(
-                    String.format("Comets: %d", this.game_options.getCometCount())
+                String.format("Tile size: %d", this.game_options.getTileSize())
             );
         });
 
@@ -177,9 +157,8 @@ public class Main extends Application {
         });
 
         VBox options_box = new VBox(
-                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
-                tile_size_label, tile_size, planet_count_label, planet_count,
-                comet_count_label, comet_count, save_and_go_back
+            title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
+            tile_size_label, tile_size, save_and_go_back
         );
         options_box.setSpacing(10);
         options_box.setAlignment(Pos.CENTER);

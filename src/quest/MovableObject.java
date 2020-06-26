@@ -36,31 +36,6 @@ public class MovableObject extends Object {
         }
     }
 
-    public void handleKeyPressed (KeyCode code) {
-        switch (code) {
-            case W:
-            case UP: {
-                moveObject("up");
-                break;
-            }
-            case S:
-            case DOWN: {
-                moveObject("down");
-                break;
-            }
-            case A:
-            case LEFT: {
-                moveObject("left");
-                break;
-            }
-            case D:
-            case RIGHT: {
-                moveObject("right");
-                break;
-            }
-        }
-    }
-
     public void moveObject(String move_to) {
         Tile object_tile = getTile();
         Object collided = null;
