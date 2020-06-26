@@ -90,9 +90,13 @@ public class MovableObject extends Object {
             }
         }
 
+        if (this instanceof Comet && collided != null) {
+            System.out.println(collided.getClass());
+        }
         if (collided != null) {
-            if (collided instanceof Comet) {
+            if (collided instanceof Comet || collided instanceof User) {
                 Main.game_over = true;
+
             }
 
             if (collided instanceof Planet) {

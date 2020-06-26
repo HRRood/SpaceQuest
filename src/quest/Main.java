@@ -275,13 +275,10 @@ public class Main extends Application {
     //add an timer & set an input handler.
     private void addHandlers() {
         Timer timer = new Timer();
+        Main m = this;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (Main.game_over || Main.game_won) {
-                    timer.cancel();
-                    return;
-                }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -292,6 +289,10 @@ public class Main extends Application {
                         }
 
                         updateGame();
+                        if (Main.game_over || Main.game_won) {
+                            timer.cancel();
+                            setupGameOverMenu();
+                        }
                     }
                 });
             }
@@ -314,14 +315,10 @@ public class Main extends Application {
                 this.setWormhole();
             }
             this.updateGame();
-
-            if (Main.game_over || Main.game_won) {
-                this.setupGameOverMenu();
-            }
         });
     }
 
-    private void setupGameOverMenu() {
+    public void setupGameOverMenu() {
         this.go_menu.setVisible(true);
 
         //announce label.
