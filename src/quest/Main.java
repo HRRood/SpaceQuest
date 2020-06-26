@@ -2,7 +2,6 @@ package quest;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -230,16 +229,12 @@ public class Main extends Application {
         }
 
         //create player.
-        Image user_image = new Image (
-            new File(RESOURCE_PATH + "spaceship.png").toURI().toString()
-        );
+        Image user_image = new Image (new File(RESOURCE_PATH + "spaceship.png").toURI().toString());
         this.user = new User(user_image, grid[0][0], "up");
         this.grid[0][0].setObject(this.user);
 
         //creating Comets.
-        Image comet_image = new Image (
-                new File(RESOURCE_PATH + "Meteorites.png").toURI().toString()
-        );
+        Image comet_image = new Image (new File(RESOURCE_PATH + "Meteorites.png").toURI().toString());
         for(int i = 0; i < this.comets.length; i++) {
             int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
             int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
