@@ -86,7 +86,9 @@ public class Main extends Application {
             this.stage.setScene(this.game_scene);
         });
 
-        Button options_button = new Button("Game Options");
+        Image option_BTN_button = new Image(new File(RESOURCE_PATH + "Menu/Setting_BTN.png").toURI().toString());
+        Button options_button = new Button("", new ImageView(option_BTN_button));
+        options_button.setStyle("-fx-background-color: transparent;");
         options_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         options_button.setOnAction(event -> {
             this.stage.setScene(this.options_scene);
@@ -206,11 +208,8 @@ public class Main extends Application {
         this.go_menu.setVisible(false);
 
         //create score
-        Image score_Image = new Image (new File(RESOURCE_PATH + "Menu/Score.png").toURI().toString());
-        ImageView score_view = new ImageView(score_Image);
-        score_view.setFitHeight(38);
-        String player_score = ": " + this.score;
-        this.score_text = new Label(player_score, score_view);
+        String player_score = "Score: " + this.score;
+        this.score_text = new Label(player_score);
         this.score_text.setFont(new Font(38));
         StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
 
@@ -347,23 +346,29 @@ public class Main extends Application {
         background.setLayoutY(this.game.getHeight() / 3);
 
         //result label.
-        String result_text = "";
+        Image result_img = null;
 
         if(Main.game_over) {
-            result_text = "GAME OVER";
+            result_img = new Image(new File(RESOURCE_PATH + "Menu/Lose_Header.png").toURI().toString());
         } else if(Main.game_won) {
-            result_text = "GAME WON";
+            result_img = new Image(new File(RESOURCE_PATH + "Menu/Win_Header.png").toURI().toString());
         }
 
-        Label result = new Label(result_text);
+        ImageView resultV = new ImageView(result_img);
+        Label result = new Label("", resultV);
         result.setFont(new Font(25));
         result.setTextFill(Color.WHITE);
         result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         result.setLayoutY(background.getLayoutY());
 
         //Score label.
-        String score_text = "Your score: " + this.score;
-        Label score = new Label(score_text);
+        Image score_Image = new Image (new File(RESOURCE_PATH + "Menu/Score.png").toURI().toString());
+        ImageView score_view = new ImageView(score_Image);
+        score_view.setFitWidth(background.getMinWidth() * 0.1);
+        score_view.setFitHeight(background.getMinHeight() * 0.1);
+        String score_text = ": " + this.score;
+        Label score = new Label(score_text, score_view);
+        score.setContentDisplay(ContentDisplay.LEFT);
         score.setFont(new Font(25));
         score.setTextFill(Color.WHITE);
         score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
@@ -377,6 +382,7 @@ public class Main extends Application {
         home_button.setContentDisplay(ContentDisplay.CENTER);
         home_button.setStyle("-fx-background-color: transparent;");
         home_button.setTextFill(Color.WHITE);
+        home_button.setFont(new Font(23));
         home_button.setMinSize(background.getMinWidth() * 0.2, background.getHeight() * 0.2);
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         home_button.setLayoutY(background.getLayoutY() * 1.7);
@@ -459,7 +465,7 @@ public class Main extends Application {
         game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
         game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
 
-        this.score_text.setText(": " + this.score);
+        this.score_text.setText("Score: " + this.score);
     }
 
     public static void main(String[] args) {
