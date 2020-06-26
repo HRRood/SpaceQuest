@@ -7,8 +7,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class Tile {
