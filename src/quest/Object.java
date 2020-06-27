@@ -15,10 +15,6 @@ public class Object {
         return this.sprite;
     }
 
-    public void setSprite(Image sprite) {
-        this.sprite = sprite;
-    }
-
     public Tile getTile() {
         return tile;
     }
