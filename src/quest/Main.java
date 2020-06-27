@@ -23,31 +23,31 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    private static final String RESOURCE_PATH = "src/quest/Resources/";
-    private static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
-    private static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
-    private static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
-    private static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
-    private static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
-    private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
+    public static final String RESOURCE_PATH = "src/quest/Resources/";
+    public static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+    public static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+    public static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
+    public static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
+    public static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
+    public static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
 
-    private GameOptions game_options;
+    public GameOptions game_options;
 
-    private Tile[][] grid;
-    private Comet[] comets;
-    private Planet[] planets;
-    private Wormhole wormhole;
-    private User user;
+    public Tile[][] grid;
+    public Comet[] comets;
+    public Planet[] planets;
+    public Wormhole wormhole;
+    public User user;
 
-    private Stage stage;
-    private Scene game_scene;
-    private Scene options_scene;
-    private Scene menu_scene;
+    public Stage stage;
+    public Scene game_scene;
+    public Scene options_scene;
+    public Scene menu_scene;
 
-    private Pane game;
-    private Pane go_menu;
-    private Label score_text;
-    private Integer score = -1;
+    public Pane game;
+    public Pane go_menu;
+    public Label score_text;
+    public Integer score = -1;
 
     public static boolean game_over = false;
     public static boolean game_won = false;
@@ -73,7 +73,7 @@ public class Main extends Application {
     }
 
     //creates the menu.
-    private Scene createMenuScene() {
+    public Scene createMenuScene() {
         Text text = new Text("Space Quest");
         text.setFont(Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130));
 
@@ -108,7 +108,7 @@ public class Main extends Application {
         return new Scene(menu_buttons, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
-    private Scene createOptionsScene() {
+    public Scene createOptionsScene() {
         Text title = new Text("Game Options");
         title.setFont(Font.font(20));
 
@@ -188,7 +188,7 @@ public class Main extends Application {
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
-    private Parent createGame() {
+    public Parent createGame() {
         this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
         this.comets = new Comet[this.game_options.getCometCount()];
         this.planets = new Planet[this.game_options.getPlanetCount()];
@@ -273,7 +273,7 @@ public class Main extends Application {
     }
 
     //add an timer & set an input handler.
-    private void addHandlers() {
+    public void addHandlers() {
         Timer timer = new Timer();
         Main m = this;
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -365,7 +365,7 @@ public class Main extends Application {
     }
 
     //creating wormhole after all planets have been visited.
-    private void setWormhole () {
+    public void setWormhole () {
         int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
         int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
 
@@ -383,7 +383,7 @@ public class Main extends Application {
     }
 
     //get the neighbours of the parameter tile.
-    private List<Tile> getNeighbours (Tile tile) {
+    public List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
         Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
 
@@ -409,7 +409,7 @@ public class Main extends Application {
     }
 
     //resetting game values
-    private void resetGame() {
+    public void resetGame() {
         Main.game_over = false;
         Main.game_won = false;
         this.score = -1;
