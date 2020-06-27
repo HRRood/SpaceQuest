@@ -13,14 +13,14 @@ public class Comet extends MovableObject {
 
         //get random location.
         int newPos = getRandom();
-        boolean loop_runing = true;
-        while (loop_runing) {
+        boolean loop_running = true;
+        while (loop_running) {
             newPos = getRandom();
             if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
-                loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
-                Main.game_over = !loop_runing;
+                loop_running = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
+                Main.game_over = !loop_running;
             } else {
-                loop_runing = false;
+                loop_running = false;
             }
         }
 
