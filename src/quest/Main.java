@@ -75,6 +75,10 @@ public class Main extends Application {
 
     //creates the menu.
     private Scene createMenuScene() {
+
+        Text text = new Text("Space Quest");
+        text.setFont(Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130));
+
         Image start_BTN_image = new Image (new File(RESOURCE_PATH + "Menu/Start_BTN.png").toURI().toString());
         Button start_button = new Button("", new ImageView(start_BTN_image));
         start_button.setStyle("-fx-background-color: transparent;");
@@ -105,7 +109,7 @@ public class Main extends Application {
             }
         });
 
-        VBox menu_buttons = new VBox(start_button, options_button, exit_button);
+        VBox menu_buttons = new VBox(text, start_button, options_button, exit_button);
         menu_buttons.setSpacing(10);
         menu_buttons.setAlignment(Pos.CENTER);
 
@@ -136,22 +140,27 @@ public class Main extends Application {
         y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setYTileCount(newValue.intValue());
             y_tile_count_label.setText(
-                    String.format("Tiles in height: %d", this.game_options.getYTileCount())
+                String.format("Tiles in height: %d", this.game_options.getYTileCount())
             );
         });
 
         Label tile_size_label = new Label(
-                String.format("Tile size: %d", this.game_options.getTileSize())
+            String.format("Tile size: %d", this.game_options.getTileSize())
         );
         Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
         tile_size.setMaxWidth(STAGE_WIDTH * .3);
         tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setTileSize(newValue.intValue());
             tile_size_label.setText(
-                    String.format("Tile size: %d", this.game_options.getTileSize())
+                String.format("Tile size: %d", this.game_options.getTileSize())
             );
         });
 
+        Button save_and_go_back = new Button("Save and go back");
+        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        save_and_go_back.setOnAction(event -> {
+            this.stage.setScene(this.menu_scene);
+        });
         Label planet_count_label = new Label(
                 String.format("Planets: %d", this.game_options.getPlanetCount())
         );
@@ -160,7 +169,7 @@ public class Main extends Application {
         planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setPlanetCount(newValue.intValue());
             planet_count_label.setText(
-                    String.format("Planets: %d", this.game_options.getPlanetCount())
+                String.format("Planets: %d", this.game_options.getPlanetCount())
             );
         });
 
@@ -172,20 +181,13 @@ public class Main extends Application {
         comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.game_options.setCometCount(newValue.intValue());
             comet_count_label.setText(
-                    String.format("Comets: %d", this.game_options.getCometCount())
+                String.format("Comets: %d", this.game_options.getCometCount())
             );
         });
 
-        Button save_and_go_back = new Button("Save and go back");
-        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        save_and_go_back.setOnAction(event -> {
-            this.stage.setScene(this.menu_scene);
-        });
-
         VBox options_box = new VBox(
-                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count,
-                tile_size_label, tile_size, planet_count_label, planet_count,
-                comet_count_label, comet_count, save_and_go_back
+                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count, tile_size_label,
+                tile_size, planet_count_label, planet_count, comet_count_label, comet_count, save_and_go_back
         );
         options_box.setSpacing(10);
         options_box.setAlignment(Pos.CENTER);
@@ -277,13 +279,10 @@ public class Main extends Application {
     //add an timer & set an input handler.
     private void addHandlers() {
         Timer timer = new Timer();
+        Main m = this;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (Main.game_over || Main.game_won) {
-                    timer.cancel();
-                    return;
-                }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -294,6 +293,10 @@ public class Main extends Application {
                         }
 
                         updateGame();
+                        if (Main.game_over || Main.game_won) {
+                            timer.cancel();
+                            setupGameOverMenu();
+                        }
                     }
                 });
             }
@@ -316,14 +319,10 @@ public class Main extends Application {
                 this.setWormhole();
             }
             this.updateGame();
-
-            if (Main.game_over || Main.game_won) {
-                this.setupGameOverMenu();
-            }
         });
     }
 
-    private void setupGameOverMenu() {
+    public void setupGameOverMenu() {
         this.go_menu.setVisible(true);
 
         int game_width = (game_options.getTileSize() * game_options.getXTileCount()) / 2;

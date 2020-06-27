@@ -1,7 +1,6 @@
 package quest;
 
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 
 import java.util.List;
 
@@ -32,31 +31,6 @@ public class MovableObject extends Object {
             }
             default: {
                 return 0;
-            }
-        }
-    }
-
-    public void handleKeyPressed (KeyCode code) {
-        switch (code) {
-            case W:
-            case UP: {
-                moveObject("up");
-                break;
-            }
-            case S:
-            case DOWN: {
-                moveObject("down");
-                break;
-            }
-            case A:
-            case LEFT: {
-                moveObject("left");
-                break;
-            }
-            case D:
-            case RIGHT: {
-                moveObject("right");
-                break;
             }
         }
     }
@@ -116,9 +90,13 @@ public class MovableObject extends Object {
             }
         }
 
+        if (this instanceof Comet && collided != null) {
+            System.out.println(collided.getClass());
+        }
         if (collided != null) {
-            if (collided instanceof Comet) {
+            if (collided instanceof Comet || collided instanceof User) {
                 Main.game_over = true;
+
             }
 
             if (collided instanceof Planet) {
