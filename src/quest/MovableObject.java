@@ -1,11 +1,11 @@
 package quest;
 
 import javafx.scene.image.Image;
-
 import java.util.List;
 
 public class MovableObject extends Object {
     private String direction;
+
     public MovableObject(Image sprite, Tile tile, String direction) {
         super(sprite, tile);
         this.direction = direction;
@@ -90,13 +90,9 @@ public class MovableObject extends Object {
             }
         }
 
-        if (this instanceof Comet && collided != null) {
-            System.out.println(collided.getClass());
-        }
         if (collided != null) {
             if (collided instanceof Comet || collided instanceof User) {
-                Main.game_over = true;
-
+                Game.game_over = true;
             }
 
             if (collided instanceof Planet) {
@@ -104,7 +100,7 @@ public class MovableObject extends Object {
             }
 
             if (collided instanceof Wormhole) {
-                Main.game_won = true;
+                Game.game_won = true;
             }
         }
         this.direction = move_to;
@@ -112,6 +108,7 @@ public class MovableObject extends Object {
 
     public Object getCollision (Tile go_to_tile) {
         Object[] go_to_tile_object = go_to_tile.getObject();
+
         if (this instanceof User) {
             for (Object object : go_to_tile_object) {
                 if (object instanceof Comet) {

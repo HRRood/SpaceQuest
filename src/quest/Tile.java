@@ -17,8 +17,6 @@ public class Tile {
     private Image background;
 
     private List<Tile> neighbours;
-
-    private User user;
     private Object[] object = new Object[2];
     private ImageView objectview;
     private ImageView top_user_view;
@@ -41,7 +39,7 @@ public class Tile {
         creatTile();
     }
 
-    private void creatTile(){
+    private void creatTile() {
         if(this.position_y < 0 && this.position_x < 0) {
             return;
         }
@@ -58,8 +56,7 @@ public class Tile {
     }
 
     public void updateObject () {
-        this.pane.getChildren().remove(objectview);
-        this.pane.getChildren().remove(top_user_view);
+        this.pane.getChildren().removeAll(objectview, top_user_view);
         if (object[0] == null) {
             return;
         }
@@ -69,14 +66,17 @@ public class Tile {
         objectview.setFitHeight(this.size * 0.8);
         objectview.setTranslateX(position_x * this.size);
         objectview.setTranslateY(position_y * this.size);
+
         if (object[0] instanceof MovableObject) {
             objectview.setRotate(((MovableObject) object[0]).getDirection());
         }
+
         if (object[0] instanceof Planet && ((Planet) object[0]).isVisited()) {
             ColorAdjust colorAdjust = new ColorAdjust();
             colorAdjust.setBrightness(-0.5);
             objectview.setEffect(colorAdjust);
         }
+
         this.pane.getChildren().add(objectview);
 
         if (object[1] != null && object[1] instanceof User) {
