@@ -174,10 +174,11 @@ public class Game {
             }
         }
 
-        int game_size = this.game_options.getTileSize() * this.game_options.getXTileCount();
+        int game_size_x = this.game_options.getTileSize() * this.game_options.getXTileCount();
+        int game_size_y = this.game_options.getTileSize() * this.game_options.getYTileCount();
 
-        game.setTranslateX((Main.STAGE_WIDTH * 0.5) - (game_size * 0.5));
-        game.setTranslateY((Main.STAGE_HEIGHT * 0.5) - (game_size * 0.5));
+        game.setTranslateX((Main.STAGE_WIDTH * 0.5) - (game_size_x * 0.5));
+        game.setTranslateY((Main.STAGE_HEIGHT * 0.5) - (game_size_y * 0.5));
 
         this.score_text.setText("Score: " + this.score);
     }
@@ -188,6 +189,11 @@ public class Game {
             @Override
             public void run() {
             Platform.runLater(() -> {
+                if (game_over || game_won) {
+                    timer.cancel();
+                    timer.purge();
+                    return;
+                }
                 score++;
 
                 for (Comet c : comets) {
@@ -197,6 +203,7 @@ public class Game {
                 update();
                 if (game_over || game_won) {
                     timer.cancel();
+                    timer.purge();
                     setupGameOverMenu();
                 }
             });
