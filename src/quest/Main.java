@@ -23,6 +23,7 @@ public class Main extends Application {
 
     public Menu menu;
     public GameOptions game_options;
+    public Game game;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -51,7 +52,8 @@ public class Main extends Application {
     }
 
     public void gotoGame() {
-        this.stage.setScene(new Game(this, this.game_options).getScene());
+        this.game = new Game(this, this.game_options);
+        this.stage.setScene(this.game.getScene());
     }
 
     public static void main(String[] args) {
