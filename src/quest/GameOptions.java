@@ -86,7 +86,7 @@ public class GameOptions {
         Button save_and_go_back = new Button("Save and go back");
         save_and_go_back.setFont(Main.FONT_20);
         save_and_go_back.setMinSize(Main.BUTTON_WIDTH, Main.BUTTON_HEIGHT);
-        save_and_go_back.setOnAction(e -> main.goMenu());
+        save_and_go_back.setOnAction(e -> main.gotoMenu());
 
         VBox options_box = new VBox(
                 title,

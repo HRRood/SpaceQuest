@@ -25,8 +25,8 @@ public class Menu {
         Text text = new Text("Space Quest");
         text.setFont(Main.FONT_130);
 
-        Button start_button = newButton("Start Game", e -> main.goGame());
-        Button options_button = newButton("Game Options", e -> main.goGameOptions());
+        Button start_button = newButton("Start Game", e -> main.gotoGame());
+        Button options_button = newButton("Game Options", e -> main.gotoGameOptions());
         Button exit_button = newButton("Exit", e -> {
             try {
                 main.stop();

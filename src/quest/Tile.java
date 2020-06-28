@@ -41,7 +41,7 @@ public class Tile {
         creatTile();
     }
 
-    private void creatTile(){
+    private void creatTile() {
         if(this.position_y < 0 && this.position_x < 0) {
             return;
         }

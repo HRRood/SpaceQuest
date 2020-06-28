@@ -8,9 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -30,8 +28,8 @@ public class Main extends Application {
     public static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
     public static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
     public static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
-    public static final Font FONT_130 = Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130);
-    public static final Font FONT_20 = Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 20);
+    public static final Font FONT_130 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 130);
+    public static final Font FONT_20 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 20);
 
     private Menu menu;
     private GameOptions game_options;
@@ -95,8 +93,7 @@ public class Main extends Application {
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                Tile tile = new Tile(x, y, this.game_options.getTileSize(), tile_background);
-                grid[x][y] = tile;
+                grid[x][y] = new Tile(x, y, this.game_options.getTileSize(), tile_background);
             }
         }
 
@@ -320,15 +317,15 @@ public class Main extends Application {
         this.score_text.setText("Score: " + this.score);
     }
 
-    public void goMenu() {
+    public void gotoMenu() {
         this.stage.setScene(this.menu.getScene());
     }
 
-    public void goGameOptions() {
+    public void gotoGameOptions() {
         this.stage.setScene(this.game_options.getScene());
     }
 
-    public void goGame() {
+    public void gotoGame() {
         this.game_scene = new Scene(createGame());
         this.addHandlers();
         this.stage.setScene(this.game_scene);
