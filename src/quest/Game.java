@@ -21,11 +21,11 @@ public class Game {
     private Main main;
     private GameOptions game_options;
 
-    private Tile[][] grid;
+    public Tile[][] grid;
     private Comet[] comets;
-    private Planet[] planets;
-    private Wormhole wormhole;
-    private User user;
+    public Planet[] planets;
+    public Wormhole wormhole;
+    public User user;
 
     private Pane game;
     private Pane go_menu;
@@ -36,7 +36,7 @@ public class Game {
     public static boolean game_won = false;
     public boolean all_planets_visited = false;
 
-    private Scene scene;
+    public Scene scene;
 
     public Game(Main main, GameOptions game_options) {
         this.main = main;
@@ -182,7 +182,7 @@ public class Game {
         this.score_text.setText("Score: " + this.score);
     }
 
-    private void addHandlers(Main main) {
+    public void addHandlers(Main main) {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -282,7 +282,7 @@ public class Game {
         Game.game_won = false;
     }
 
-    private void setWormhole () {
+    public void setWormhole () {
         int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
         int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
 
