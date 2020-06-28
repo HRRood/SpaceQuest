@@ -301,4 +301,16 @@ public class Game {
         this.grid[random_x][random_y].setObject(wormhole);
     }
 
+    public Tile[][] getGrid() {
+        return this.grid;
+    }
+
+    public Comet[] getComets() {
+        return this.comets;
+    }
+
+    public Planet[] getPlanets() {
+        return this.planets;
+    }
+
 }
