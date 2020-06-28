@@ -51,6 +51,7 @@ public class Main extends Application {
     public static boolean game_over = false;
     public static boolean game_won = false;
     public boolean all_planets_visited = false;
+    public Timer timer;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -263,26 +264,29 @@ public class Main extends Application {
 
     //add an timer & set an input handler.
     public void addHandlers() {
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    if (Main.game_over || Main.game_won) {
-                        return;
-                    }
-                    score++;
+            Platform.runLater(() -> {
+                if (Main.game_over || Main.game_won) {
+                    timer.cancel();
+                    timer.purge();
+                    return;
+                }
+                score++;
 
-                    for (Comet c : comets) {
-                        c.update();
-                    }
+                for (Comet c : comets) {
+                    c.update();
+                }
 
-                    updateGame();
-                    if (Main.game_over || Main.game_won) {
-                        timer.cancel();
-                        setupGameOverMenu();
-                    }
-                });
+                updateGame();
+                if (Main.game_over || Main.game_won) {
+                    timer.cancel();
+                    timer.purge();
+                    setupGameOverMenu();
+                }
+            });
             }
         }, 0, 1000);
 
@@ -405,6 +409,8 @@ public class Main extends Application {
         Main.game_won = false;
         this.score = -1;
         this.all_planets_visited = false;
+        this.timer.cancel();
+        this.timer.purge();
     }
 
     //update & Render

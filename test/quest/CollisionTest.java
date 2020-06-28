@@ -32,6 +32,7 @@ public class CollisionTest {
                             m.planets[0].setTile(m.grid[1][0]);
                             m.grid[1][0].setObject(m.planets[0]);
                             prev_tile.emptyTile();
+                            m.updateGame();
                             m.user.handleKeyPressed(KeyCode.RIGHT);
                             planet_is_visited[0] = m.planets[0].isVisited();
                         } catch (Exception e) {
@@ -69,6 +70,7 @@ public class CollisionTest {
                             m.comets[0].setTile(m.grid[1][0]);
                             m.grid[1][0].setObject(m.comets[0]);
                             prev_tile.emptyTile();
+                            m.updateGame();
                             m.user.handleKeyPressed(KeyCode.RIGHT);
                             comet_hit[0] = Main.game_over;
                         } catch (Exception e) {
