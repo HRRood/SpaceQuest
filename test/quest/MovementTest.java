@@ -27,12 +27,10 @@ public class MovementTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            m.user.handleKeyPressed(KeyCode.DOWN);
-                            pos_x[0] = m.user.getTile().getPosition_x();
-                            pos_y[0] = m.user.getTile().getPosition_y();
+                            m.gotoGame();
+                            m.game.user.handleKeyPressed(KeyCode.DOWN);
+                            pos_x[0] = m.game.user.getTile().getPosition_x();
+                            pos_y[0] = m.game.user.getTile().getPosition_y();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -64,12 +62,10 @@ public class MovementTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            m.user.handleKeyPressed(KeyCode.LEFT);
-                            pos_x[0] = m.user.getTile().getPosition_x();
-                            pos_y[0] = m.user.getTile().getPosition_y();
+                            m.gotoGame();
+                            m.game.user.handleKeyPressed(KeyCode.LEFT);
+                            pos_x[0] = m.game.user.getTile().getPosition_x();
+                            pos_y[0] = m.game.user.getTile().getPosition_y();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -101,12 +97,10 @@ public class MovementTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            m.user.handleKeyPressed(KeyCode.UP);
-                            pos_x[0] = m.user.getTile().getPosition_x();
-                            pos_y[0] = m.user.getTile().getPosition_y();
+                            m.gotoGame();
+                            m.game.user.handleKeyPressed(KeyCode.UP);
+                            pos_x[0] = m.game.user.getTile().getPosition_x();
+                            pos_y[0] = m.game.user.getTile().getPosition_y();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -138,12 +132,10 @@ public class MovementTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            m.user.handleKeyPressed(KeyCode.RIGHT);
-                            pos_x[0] = m.user.getTile().getPosition_x();
-                            pos_y[0] = m.user.getTile().getPosition_y();
+                            m.gotoGame();
+                            m.game.user.handleKeyPressed(KeyCode.RIGHT);
+                            pos_x[0] = m.game.user.getTile().getPosition_x();
+                            pos_y[0] = m.game.user.getTile().getPosition_y();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -153,7 +145,7 @@ public class MovementTest {
         });
         thread.start();// Initialize the thread
         Thread.sleep(3000); // Time to use the app, with out this, the thread
-        // will be killed before you can tell.
+//         will be killed before you can tell.
         assertEquals(pos_x[0], 1);
         assertEquals(pos_y[0], 0);
     }
