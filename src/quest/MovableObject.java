@@ -92,7 +92,7 @@ public class MovableObject extends Object {
 
         if (collided != null) {
             if (collided instanceof Comet || collided instanceof User) {
-                Main.game_over = true;
+                Game.game_over = true;
             }
 
             if (collided instanceof Planet) {
@@ -100,7 +100,7 @@ public class MovableObject extends Object {
             }
 
             if (collided instanceof Wormhole) {
-                Main.game_won = true;
+                Game.game_won = true;
             }
         }
         this.direction = move_to;

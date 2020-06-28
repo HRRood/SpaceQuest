@@ -18,7 +18,7 @@ public class Comet extends MovableObject {
             newPos = getRandom();
             if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
                 loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
-                Main.game_over = !loop_runing;
+                Game.game_over = !loop_runing;
             } else {
                 loop_runing = false;
             }
