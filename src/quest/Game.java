@@ -28,6 +28,8 @@ public class Game {
     protected User user;
     protected Timer timer;
 
+    protected Wormhole wormhole;
+
     private Pane game;
     private Pane go_menu;
     private Label score_text;
@@ -35,7 +37,7 @@ public class Game {
 
     public static boolean game_over = false;
     public static boolean game_won = false;
-    public boolean all_planets_visited = false;
+    public static boolean all_planets_visited = false;
 
     public Scene scene;
 
@@ -183,7 +185,6 @@ public class Game {
         this.score_text.setText("Score: " + this.score);
     }
 
-
     private void addHandlers() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -193,7 +194,7 @@ public class Game {
                 score++;
 
                 for (Comet c : comets) {
-                    c.update();
+                    //c.update();
                 }
 
                 update();
@@ -292,7 +293,7 @@ public class Game {
 
         Image wormhole_image = new Image(Main.FullResourcePath("wormhole.png"));
 
-        Wormhole wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
+        wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
         this.grid[random_x][random_y].setObject(wormhole);
     }
 

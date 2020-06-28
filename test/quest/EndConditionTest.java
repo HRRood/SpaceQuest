@@ -4,15 +4,15 @@ import static org.junit.Assert.*;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+
 import org.junit.Test;
 
 public class EndConditionTest {
 
     @Test
-    public void planetVisitCollisionTest() throws InterruptedException {
+    public void EndConditionTest() throws InterruptedException {
         final boolean[] planet_is_visited = {false};
 
         Thread thread = new Thread(new Runnable() {
@@ -42,14 +42,14 @@ public class EndConditionTest {
                             m.game.timer.purge();
                             planet_is_visited[0] = m.game.planets[0].isVisited();
 
-                            g.setWormhole();
+                            m.game.setWormhole();
 
-                            Tile old_wormhole_tile = g.wormhole.getTile();
-                            g.wormhole.setTile(g.grid[1][2]);
-                            g.grid[1][2].setObject(g.wormhole);
-                            old_wormhole_tile.emptyTile();
-                            g.user.handleKeyPressed(KeyCode.DOWN);
-                            g.user.handleKeyPressed(KeyCode.DOWN);
+                            Tile prev_wormhole_tile = m.game.wormhole.getTile();
+                            m.game.wormhole.setTile(m.game.grid[1][2]);
+                            m.game.grid[1][2].setObject(m.game.wormhole);
+                            prev_wormhole_tile.emptyTile();
+                            m.game.user.handleKeyPressed(KeyCode.DOWN);
+                            m.game.user.handleKeyPressed(KeyCode.DOWN);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -60,13 +60,9 @@ public class EndConditionTest {
         });
 
         thread.start();// Initialize the thread
-        Thread.sleep(3000); // Time to use the app, with out this, the thread
+        Thread.sleep(9000); // Time to use the app, with out this, the thread
         // will be killed before you can tell.
-
         assertTrue(Game.game_won);
-
     }
-
-
 
 }

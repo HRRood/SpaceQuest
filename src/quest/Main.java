@@ -23,8 +23,6 @@ public class Main extends Application {
 
     public Stage stage;
 
-    public Game game;
-
     private Menu menu;
     private GameOptions game_options;
 
