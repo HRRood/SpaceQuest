@@ -23,6 +23,8 @@ public class Main extends Application {
 
     public Stage stage;
 
+    public Game game;
+
     private Menu menu;
     private GameOptions game_options;
 
@@ -55,7 +57,8 @@ public class Main extends Application {
     }
 
     public void gotoGame() {
-        this.stage.setScene(new Game(this, this.game_options).getScene());
+        game = new Game(this, this.game_options);
+        this.stage.setScene(game.getScene());
     }
 
     public static void main(String[] args) {
