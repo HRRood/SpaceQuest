@@ -21,11 +21,14 @@ public class Game {
     private Main main;
     private GameOptions game_options;
 
+
     protected Tile[][] grid;
     protected Comet[] comets;
     protected Planet[] planets;
     protected User user;
     protected Timer timer;
+
+    protected Wormhole wormhole;
 
     private Pane game;
     private Pane go_menu;
@@ -34,9 +37,9 @@ public class Game {
 
     public static boolean game_over = false;
     public static boolean game_won = false;
-    public boolean all_planets_visited = false;
+    public static boolean all_planets_visited = false;
 
-    private Scene scene;
+    public Scene scene;
 
     public Game(Main main, GameOptions game_options) {
         this.main = main;
@@ -197,7 +200,7 @@ public class Game {
                 score++;
 
                 for (Comet c : comets) {
-                    c.update();
+                    //c.update();
                 }
 
                 update();
@@ -286,7 +289,7 @@ public class Game {
         Game.game_won = false;
     }
 
-    private void setWormhole () {
+    public void setWormhole () {
         int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
         int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
 
@@ -297,7 +300,7 @@ public class Game {
 
         Image wormhole_image = new Image(Main.FullResourcePath("wormhole.png"));
 
-        Wormhole wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
+        wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
         this.grid[random_x][random_y].setObject(wormhole);
     }
 

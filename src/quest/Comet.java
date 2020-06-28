@@ -8,22 +8,28 @@ public class Comet extends MovableObject {
         super(sprite, tile);
     }
 
+    public int newPos = 0;
+    public boolean avail = false;
+
     //updating Comet
     public void update() {
 
         //get random location.
-        int newPos = getRandom();
         boolean loop_runing = true;
         while (loop_runing) {
-            newPos = getRandom();
+            //newPos = getRandom();
+
             if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
                 loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
                 Game.game_over = !loop_runing;
+                avail = false;
+                newPos = getRandom();
             } else {
                 loop_runing = false;
+                avail = true;
             }
         }
-
+        System.out.println(avail);
         //move
         moveObject(POSITION[newPos]);
 
