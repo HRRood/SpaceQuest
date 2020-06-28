@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import java.io.File;
 
 public class Main extends Application {
@@ -62,4 +61,5 @@ public class Main extends Application {
     public static String FullResourcePath(String file) {
         return new File(Main.RESOURCE_PATH + file).toURI().toString();
     }
+
 }

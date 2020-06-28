@@ -226,6 +226,10 @@ public class Game {
             }
 
             this.update();
+
+            if (game_over || game_won) {
+                this.setupGameOverMenu();
+            }
         });
     }
 
@@ -266,13 +270,16 @@ public class Game {
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         home_button.setLayoutY(background.getLayoutX());
         home_button.setOnAction(e -> {
-            Game.game_over = false;
-            Game.game_won = false;
-
+            this.reset();
             main.gotoMenu();
         });
 
         this.go_menu.getChildren().addAll(background, result, score, home_button);
+    }
+
+    private void reset() {
+        Game.game_over = false;
+        Game.game_won = false;
     }
 
     private void setWormhole () {
