@@ -41,6 +41,7 @@ public class MovableObject extends Object {
         if (object_tile == null) {
             return;
         }
+
         List<Tile> neighbours = object_tile.getNeighbours();
         switch (move_to) {
             case "up": {

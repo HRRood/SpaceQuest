@@ -25,16 +25,18 @@ public class CollisionTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            Tile prev_tile = m.planets[0].getTile();
-                            m.planets[0].setTile(m.grid[1][0]);
-                            m.grid[1][0].setObject(m.planets[0]);
+                            m.gotoGame();
+                            Tile prev_tile = m.game.planets[0].getTile();
+                            m.game.grid[1][0].emptyTile();
+                            m.game.planets[0].setTile(m.game.grid[1][0]);
+                            m.game.grid[1][0].setObject(m.game.planets[0]);
                             prev_tile.emptyTile();
-                            m.updateGame();
-                            m.user.handleKeyPressed(KeyCode.RIGHT);
-                            planet_is_visited[0] = m.planets[0].isVisited();
+                            m.game.update();
+                            m.game.user.handleKeyPressed(KeyCode.RIGHT);
+                            m.game.update();
+                            m.game.timer.cancel();
+                            m.game.timer.purge();
+                            planet_is_visited[0] = m.game.planets[0].isVisited();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -63,17 +65,17 @@ public class CollisionTest {
                         try {
                             m = new Main();
                             m.start(new Stage());
-                            m.game_scene = new Scene(m.createGame());
-                            m.addHandlers();
-                            m.stage.setScene(m.game_scene);
-                            Tile prev_tile = m.comets[0].getTile();
-                            m.comets[0].setTile(m.grid[1][0]);
-                            m.grid[1][0].setObject(m.comets[0]);
+                            m.gotoGame();
+                            m.game.timer.cancel();
+                            m.game.timer.purge();
+                            Tile prev_tile = m.game.comets[0].getTile();
+                            m.game.grid[1][0].emptyTile();
+                            m.game.comets[0].setTile(m.game.grid[1][0]);
+                            m.game.grid[1][0].setObject(m.game.comets[0]);
                             prev_tile.emptyTile();
-                            m.updateGame();
-                            m.user.handleKeyPressed(KeyCode.RIGHT);
-                            m.updateGame();
-                            comet_hit[0] = Main.game_over;
+                            m.game.update();
+                            m.game.user.handleKeyPressed(KeyCode.RIGHT);
+                            comet_hit[0] = Game.game_over;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

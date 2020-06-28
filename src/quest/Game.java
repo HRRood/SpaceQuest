@@ -21,11 +21,11 @@ public class Game {
     private Main main;
     private GameOptions game_options;
 
-    private Tile[][] grid;
-    private Comet[] comets;
-    private Planet[] planets;
-    private Wormhole wormhole;
-    private User user;
+    protected Tile[][] grid;
+    protected Comet[] comets;
+    protected Planet[] planets;
+    protected User user;
+    protected Timer timer;
 
     private Pane game;
     private Pane go_menu;
@@ -66,7 +66,7 @@ public class Game {
         root.getChildren().addAll(this.game, this.score_text, this.go_menu);
         this.scene = new Scene(root);
 
-        this.addHandlers(main);
+        this.addHandlers();
     }
 
     public Scene getScene() {
@@ -163,7 +163,7 @@ public class Game {
         }
     }
 
-    private void update() {
+    protected void update() {
         if (!this.game.getChildren().isEmpty()) {
             this.game.getChildren().clear();
         }
@@ -182,27 +182,24 @@ public class Game {
         this.score_text.setText("Score: " + this.score);
     }
 
-    private void addHandlers(Main main) {
-        Timer timer = new Timer();
+    private void addHandlers() {
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        score++;
+            Platform.runLater(() -> {
+                score++;
 
-                        for (Comet c : comets) {
-                            c.update();
-                        }
+                for (Comet c : comets) {
+                    c.update();
+                }
 
-                        update();
-                        if (game_over || game_won) {
-                            timer.cancel();
-                            setupGameOverMenu();
-                        }
-                    }
-                });
+                update();
+                if (game_over || game_won) {
+                    timer.cancel();
+                    setupGameOverMenu();
+                }
+            });
             }
         }, 0, 1000);
 
@@ -293,8 +290,8 @@ public class Game {
 
         Image wormhole_image = new Image(Main.FullResourcePath("wormhole.png"));
 
-        this.wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
-        this.grid[random_x][random_y].setObject(this.wormhole);
+        Wormhole wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
+        this.grid[random_x][random_y].setObject(wormhole);
     }
 
 }
