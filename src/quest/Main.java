@@ -21,8 +21,8 @@ public class Main extends Application {
 
     private Stage stage;
 
-    private Menu menu;
-    private GameOptions game_options;
+    public Menu menu;
+    public GameOptions game_options;
 
     @Override
     public void start(Stage stage) throws Exception {

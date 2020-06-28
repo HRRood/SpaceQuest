@@ -297,4 +297,8 @@ public class Game {
         this.grid[random_x][random_y].setObject(this.wormhole);
     }
 
+    public Tile[][] getGrid() {
+        return this.grid;
+    }
+
 }
