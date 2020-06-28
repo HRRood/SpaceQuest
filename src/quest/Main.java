@@ -23,14 +23,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
-    private static final String RESOURCE_PATH = "src/quest/Resources/";
-    private static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
-    private static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
-    private static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
-    private static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
-    private static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
-    private static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
+    public static final String RESOURCE_PATH = "src/quest/Resources/";
+    public static final double SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
+    public static final double SCREEN_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+    public static final int STAGE_WIDTH = (int) SCREEN_WIDTH;
+    public static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
+    public static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
+    public static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
+    public static final Font FONT_130 = Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130);
+    public static final Font FONT_20 = Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 20);
 
+    private Menu menu;
     private GameOptions game_options;
 
     private Tile[][] grid;
@@ -41,8 +44,6 @@ public class Main extends Application {
 
     private Stage stage;
     private Scene game_scene;
-    private Scene options_scene;
-    private Scene menu_scene;
 
     private Pane game;
     private Pane go_menu;
@@ -55,14 +56,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.game_options = new GameOptions();
-
-        this.menu_scene = this.createMenuScene();
-        this.options_scene = this.createOptionsScene();
+        this.menu = new Menu(this);
+        this.game_options = new GameOptions(this);
 
         this.stage = stage;
         this.stage.setTitle("Space Quest");
-        this.stage.setScene(this.menu_scene);
+        this.stage.setScene(this.menu.getScene());
         this.stage.setMaximized(true);
         this.stage.show();
     }
@@ -70,121 +69,6 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         this.stage.close();
-    }
-
-    //creates the menu.
-    private Scene createMenuScene() {
-        Text text = new Text("Space Quest");
-        text.setFont(Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130));
-
-        Button start_button = new Button("Start Game");
-        start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        start_button.setOnAction(event -> {
-            this.game_scene = new Scene(createGame());
-            this.addHandlers();
-            this.stage.setScene(this.game_scene);
-        });
-
-        Button options_button = new Button("Game Options");
-        options_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        options_button.setOnAction(event -> {
-            this.stage.setScene(this.options_scene);
-        });
-
-        Button exit_button = new Button("Exit");
-        exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        exit_button.setOnAction(event -> {
-            try {
-                this.stop();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        VBox menu_buttons = new VBox(text, start_button, options_button, exit_button);
-        menu_buttons.setSpacing(10);
-        menu_buttons.setAlignment(Pos.CENTER);
-
-        return new Scene(menu_buttons, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
-    }
-
-    private Scene createOptionsScene() {
-        Text title = new Text("Game Options");
-        title.setFont(Font.font(20));
-
-        Label x_tile_count_label = new Label(
-                String.format("Tiles in width: %d", this.game_options.getXTileCount())
-        );
-        Slider x_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
-        x_tile_count.setMaxWidth(STAGE_WIDTH * .3);
-        x_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setXTileCount(newValue.intValue());
-            x_tile_count_label.setText(
-                String.format("Tiles in width: %d", this.game_options.getXTileCount())
-            );
-        });
-
-        Label y_tile_count_label = new Label(
-                String.format("Tiles in height: %d", this.game_options.getYTileCount())
-        );
-        Slider y_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
-        y_tile_count.setMaxWidth(STAGE_WIDTH * .3);
-        y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setYTileCount(newValue.intValue());
-            y_tile_count_label.setText(
-                String.format("Tiles in height: %d", this.game_options.getYTileCount())
-            );
-        });
-
-        Label tile_size_label = new Label(
-            String.format("Tile size: %d", this.game_options.getTileSize())
-        );
-        Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
-        tile_size.setMaxWidth(STAGE_WIDTH * .3);
-        tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setTileSize(newValue.intValue());
-            tile_size_label.setText(
-                String.format("Tile size: %d", this.game_options.getTileSize())
-            );
-        });
-
-        Button save_and_go_back = new Button("Save and go back");
-        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        save_and_go_back.setOnAction(event -> {
-            this.stage.setScene(this.menu_scene);
-        });
-        Label planet_count_label = new Label(
-                String.format("Planets: %d", this.game_options.getPlanetCount())
-        );
-        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
-        planet_count.setMaxWidth(STAGE_WIDTH * .3);
-        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setPlanetCount(newValue.intValue());
-            planet_count_label.setText(
-                String.format("Planets: %d", this.game_options.getPlanetCount())
-            );
-        });
-
-        Label comet_count_label = new Label(
-                String.format("Comets: %d", this.game_options.getCometCount())
-        );
-        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
-        comet_count.setMaxWidth(STAGE_WIDTH * .3);
-        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setCometCount(newValue.intValue());
-            comet_count_label.setText(
-                String.format("Comets: %d", this.game_options.getCometCount())
-            );
-        });
-
-        VBox options_box = new VBox(
-                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count, tile_size_label,
-                tile_size, planet_count_label, planet_count, comet_count_label, comet_count, save_and_go_back
-        );
-        options_box.setSpacing(10);
-        options_box.setAlignment(Pos.CENTER);
-
-        return new Scene(options_box, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
     }
 
     //creates the game, includes creating the board with tiles, meteorites & the player.
@@ -355,9 +239,9 @@ public class Main extends Application {
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         home_button.setLayoutY(background.getLayoutX());
         home_button.setOnAction(event -> {
-            this.game_scene = this.createMenuScene();
+            this.game_scene = this.menu.getScene();
             this.addHandlers();
-            this.stage.setScene(this.menu_scene);
+            this.stage.setScene(this.menu.getScene());
             resetGame();
         });
 
@@ -434,6 +318,20 @@ public class Main extends Application {
         game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
 
         this.score_text.setText("Score: " + this.score);
+    }
+
+    public void goMenu() {
+        this.stage.setScene(this.menu.getScene());
+    }
+
+    public void goGameOptions() {
+        this.stage.setScene(this.game_options.getScene());
+    }
+
+    public void goGame() {
+        this.game_scene = new Scene(createGame());
+        this.addHandlers();
+        this.stage.setScene(this.game_scene);
     }
 
     public static void main(String[] args) {
