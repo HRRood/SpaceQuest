@@ -46,7 +46,7 @@ public class Main extends Application {
     public Pane game;
     public Pane go_menu;
     public Label score_text;
-    public Integer score = -1;
+    public Integer score = 0;
 
     public static boolean game_over = false;
     public static boolean game_won = false;
@@ -415,6 +415,9 @@ public class Main extends Application {
 
     //update & Render
     public void updateGame() {
+        if (Main.game_over || Main.game_won) {
+            this.setupGameOverMenu();
+        }
         if (!this.game.getChildren().isEmpty()) {
             this.game.getChildren().clear();
         }

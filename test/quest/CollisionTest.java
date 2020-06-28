@@ -72,6 +72,7 @@ public class CollisionTest {
                             prev_tile.emptyTile();
                             m.updateGame();
                             m.user.handleKeyPressed(KeyCode.RIGHT);
+                            m.updateGame();
                             comet_hit[0] = Main.game_over;
                         } catch (Exception e) {
                             e.printStackTrace();
