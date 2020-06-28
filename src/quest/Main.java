@@ -19,12 +19,11 @@ public class Main extends Application {
     public static final Font FONT_40 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 40);
     public static final Font FONT_20 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 20);
 
+    private Stage stage;
+
+    public Menu menu;
+    public GameOptions game_options;
     public Game game;
-
-    public Stage stage;
-
-    private Menu menu;
-    private GameOptions game_options;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -55,8 +54,8 @@ public class Main extends Application {
     }
 
     public void gotoGame() {
-        game = new Game(this, this.game_options);
-        this.stage.setScene(game.getScene());
+        this.game = new Game(this, this.game_options);
+        this.stage.setScene(this.game.getScene());
     }
 
     public static void main(String[] args) {
