@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
 public class User extends MovableObject {
+
     public User(Image sprite, Tile tile, String direction) {
         super(sprite, tile, direction);
     }
@@ -32,4 +33,5 @@ public class User extends MovableObject {
             }
         }
     }
+
 }

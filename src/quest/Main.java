@@ -48,9 +48,7 @@ public class Main extends Application {
     }
 
     public void gotoGameOptions() {
-        //this.stage.setScene(this.game_options.getScene());
-        game = new Game(this, this.game_options);
-        this.stage.setScene(game.getScene());
+        this.stage.setScene(this.game_options.getScene());
     }
 
     public void gotoGame() {

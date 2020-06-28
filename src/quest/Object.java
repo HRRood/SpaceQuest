@@ -3,6 +3,7 @@ package quest;
 import javafx.scene.image.Image;
 
 public class Object {
+
     private Image sprite;
     private Tile tile;
 
@@ -22,4 +23,5 @@ public class Object {
     public void setTile(Tile tile) {
         this.tile = tile;
     }
+
 }

@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import java.util.List;
 
 public class MovableObject extends Object {
+
     private String direction;
 
     public MovableObject(Image sprite, Tile tile, String direction) {
@@ -15,7 +16,7 @@ public class MovableObject extends Object {
         super(sprite, tile);
     }
 
-    public Integer getDirection() {
+    public int getDirection() {
         if (direction == null) {
             return 0;
         }
@@ -138,4 +139,5 @@ public class MovableObject extends Object {
         }
         return null;
     }
+
 }

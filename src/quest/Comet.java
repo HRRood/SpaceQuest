@@ -3,13 +3,15 @@ package quest;
 import javafx.scene.image.Image;
 
 public class Comet extends MovableObject {
-    String[] POSITION = {"up", "left", "right", "down"};
+
+    public String[] POSITION = {"up", "left", "right", "down"};
+    public int newPos = 0;
+    public boolean avail = false;
+
+
     public Comet(Image sprite, Tile tile) {
         super(sprite, tile);
     }
-
-    public int newPos = 0;
-    public boolean avail = false;
 
     //updating Comet
     public void update() {
@@ -17,7 +19,7 @@ public class Comet extends MovableObject {
         //get random location.
         boolean loop_runing = true;
         while (loop_runing) {
-            //newPos = getRandom();
+            newPos = getRandom();
 
             if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
                 loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
@@ -29,7 +31,7 @@ public class Comet extends MovableObject {
                 avail = true;
             }
         }
-        System.out.println(avail);
+
         //move
         moveObject(POSITION[newPos]);
 
@@ -40,4 +42,3 @@ public class Comet extends MovableObject {
     }
 
 }
-

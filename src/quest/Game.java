@@ -33,7 +33,7 @@ public class Game {
     private Pane game;
     private Pane go_menu;
     private Label score_text;
-    private Integer score = -1;
+    private int score = -1;
 
     public static boolean game_over = false;
     public static boolean game_won = false;
@@ -200,7 +200,7 @@ public class Game {
                 score++;
 
                 for (Comet c : comets) {
-                    //c.update();
+                    c.update();
                 }
 
                 update();
@@ -227,8 +227,8 @@ public class Game {
                 }
             }
 
-            if (!this.all_planets_visited && planets_visited == this.planets.length) {
-                this.all_planets_visited = true;
+            if (!Game.all_planets_visited && planets_visited == this.planets.length) {
+                Game.all_planets_visited = true;
                 this.setWormhole();
             }
 
@@ -261,18 +261,19 @@ public class Game {
         }
 
         Label result = new Label(result_text);
-        result.setFont(new Font(25));
+        result.setFont(Main.FONT_40);
         result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         result.setLayoutY(background.getLayoutY());
 
         //Score label.
         String score_text = "Your score: " + this.score;
         Label score = new Label(score_text);
-        score.setFont(new Font(25));
+        score.setFont(Main.FONT_20);
         score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
 
         Button home_button = new Button("Main Menu");
+        home_button.setFont(Main.FONT_20);
         home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
         home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
         home_button.setLayoutY(background.getLayoutX());

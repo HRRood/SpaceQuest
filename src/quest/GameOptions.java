@@ -24,8 +24,8 @@ public class GameOptions {
         this.x_tiles = 12;
         this.y_tiles = 12;
         this.tile_size = 50;
-        this.planet_count = 1;
-        this.comet_count = 1;
+        this.planet_count = 3;
+        this.comet_count = 5;
 
         this.constructScene(main);
     }
