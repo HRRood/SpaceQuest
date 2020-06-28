@@ -19,5 +19,3 @@ public class Planet extends Object {
     }
 
 }
-
-// TODO Sprites from https://opengameart.org/content/20-planet-sprites

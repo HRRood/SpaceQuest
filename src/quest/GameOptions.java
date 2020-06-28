@@ -16,14 +16,6 @@ public class GameOptions {
         this.comets = 5;
     }
 
-    public GameOptions(int x_tiles, int y_tiles, int tile_size, int planets, int comets) {
-        this.x_tiles = x_tiles;
-        this.y_tiles = y_tiles;
-        this.tile_size = tile_size;
-        this.planets = planets;
-        this.comets = comets;
-    }
-
     public int getXTileCount() {
         return this.x_tiles;
     }
