@@ -1,26 +1,10 @@
 package quest;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends Application {
 
@@ -31,41 +15,26 @@ public class Main extends Application {
     public static final int STAGE_HEIGHT = (int) SCREEN_HEIGHT;
     public static final int BUTTON_WIDTH = (int) (SCREEN_WIDTH * .2);
     public static final int BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * .1);
+    public static final Font FONT_130 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 130);
+    public static final Font FONT_40 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 40);
+    public static final Font FONT_20 = Font.loadFont(Main.class.getResource("Resources/pixel.ttf").toExternalForm(), 20);
 
-    public GameOptions game_options;
+    private Stage stage;
 
-    public Tile[][] grid;
-    public Comet[] comets;
-    public Planet[] planets;
-    public Wormhole wormhole;
-    public User user;
-
-    public Stage stage;
-    public Scene game_scene;
-    public Scene options_scene;
-    public Scene menu_scene;
-
-    public Pane game;
-    public Pane go_menu;
-    public Label score_text;
-    public Integer score = -1;
-
-    public static boolean game_over = false;
-    public static boolean game_won = false;
-    public boolean all_planets_visited = false;
+    private Menu menu;
+    private GameOptions game_options;
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.game_options = new GameOptions();
-
-        this.menu_scene = this.createMenuScene();
-        this.options_scene = this.createOptionsScene();
-
         this.stage = stage;
         this.stage.setTitle("Space Quest");
-        this.stage.setScene(this.menu_scene);
         this.stage.setMaximized(true);
         this.stage.show();
+
+        this.menu = new Menu(this);
+        this.game_options = new GameOptions(this);
+
+        this.gotoMenu();
     }
 
     @Override
@@ -73,396 +42,24 @@ public class Main extends Application {
         this.stage.close();
     }
 
-    //creates the menu.
-    public Scene createMenuScene() {
-
-        Text text = new Text("Space Quest");
-        text.setFont(Font.loadFont(Main.class.getResource("pixel.ttf").toExternalForm(), 130));
-
-        Image start_BTN_image = new Image (new File(RESOURCE_PATH + "Menu/Start_BTN.png").toURI().toString());
-        Button start_button = new Button("", new ImageView(start_BTN_image));
-        start_button.setStyle("-fx-background-color: transparent;");
-        start_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        start_button.setOnAction(event -> {
-            this.game_scene = new Scene(createGame());
-            this.addHandlers();
-            this.stage.setScene(this.game_scene);
-        });
-
-        Image option_BTN_button = new Image(new File(RESOURCE_PATH + "Menu/Setting_BTN.png").toURI().toString());
-        Button options_button = new Button("", new ImageView(option_BTN_button));
-        options_button.setStyle("-fx-background-color: transparent;");
-        options_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        options_button.setOnAction(event -> {
-            this.stage.setScene(this.options_scene);
-        });
-
-        Image exit_BTN_image = new Image (new File(RESOURCE_PATH + "Menu/Exit_BTN.png").toURI().toString());
-        Button exit_button = new Button("", new ImageView(exit_BTN_image));
-        exit_button.setStyle("-fx-background-color: transparent;");
-        exit_button.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        exit_button.setOnAction(event -> {
-            try {
-                this.stop();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        VBox menu_buttons = new VBox(text, start_button, options_button, exit_button);
-        menu_buttons.setSpacing(10);
-        menu_buttons.setAlignment(Pos.CENTER);
-
-        return new Scene(menu_buttons, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
+    public void gotoMenu() {
+        this.stage.setScene(this.menu.getScene());
     }
 
-    public Scene createOptionsScene() {
-        Text title = new Text("Game Options");
-        title.setFont(Font.font(20));
-
-        Label x_tile_count_label = new Label(
-                String.format("Tiles in width: %d", this.game_options.getXTileCount())
-        );
-        Slider x_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
-        x_tile_count.setMaxWidth(STAGE_WIDTH * .3);
-        x_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setXTileCount(newValue.intValue());
-            x_tile_count_label.setText(
-                String.format("Tiles in width: %d", this.game_options.getXTileCount())
-            );
-        });
-
-        Label y_tile_count_label = new Label(
-                String.format("Tiles in height: %d", this.game_options.getYTileCount())
-        );
-        Slider y_tile_count = new Slider(12, 100, this.game_options.getXTileCount());
-        y_tile_count.setMaxWidth(STAGE_WIDTH * .3);
-        y_tile_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setYTileCount(newValue.intValue());
-            y_tile_count_label.setText(
-                String.format("Tiles in height: %d", this.game_options.getYTileCount())
-            );
-        });
-
-        Label tile_size_label = new Label(
-            String.format("Tile size: %d", this.game_options.getTileSize())
-        );
-        Slider tile_size = new Slider(10, 100, this.game_options.getTileSize());
-        tile_size.setMaxWidth(STAGE_WIDTH * .3);
-        tile_size.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setTileSize(newValue.intValue());
-            tile_size_label.setText(
-                String.format("Tile size: %d", this.game_options.getTileSize())
-            );
-        });
-
-        Button save_and_go_back = new Button("Save and go back");
-        save_and_go_back.setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-        save_and_go_back.setOnAction(event -> {
-            this.stage.setScene(this.menu_scene);
-        });
-        Label planet_count_label = new Label(
-                String.format("Planets: %d", this.game_options.getPlanetCount())
-        );
-        Slider planet_count = new Slider(3, 100, this.game_options.getPlanetCount());
-        planet_count.setMaxWidth(STAGE_WIDTH * .3);
-        planet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setPlanetCount(newValue.intValue());
-            planet_count_label.setText(
-                String.format("Planets: %d", this.game_options.getPlanetCount())
-            );
-        });
-
-        Label comet_count_label = new Label(
-                String.format("Comets: %d", this.game_options.getCometCount())
-        );
-        Slider comet_count = new Slider(5, 100, this.game_options.getCometCount());
-        comet_count.setMaxWidth(STAGE_WIDTH * .3);
-        comet_count.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.game_options.setCometCount(newValue.intValue());
-            comet_count_label.setText(
-                String.format("Comets: %d", this.game_options.getCometCount())
-            );
-        });
-
-        VBox options_box = new VBox(
-                title, x_tile_count_label, x_tile_count, y_tile_count_label, y_tile_count, tile_size_label,
-                tile_size, planet_count_label, planet_count, comet_count_label, comet_count, save_and_go_back
-        );
-        options_box.setSpacing(10);
-        options_box.setAlignment(Pos.CENTER);
-
-        return new Scene(options_box, STAGE_WIDTH, STAGE_HEIGHT, Color.DARKGRAY);
+    public void gotoGameOptions() {
+        this.stage.setScene(this.game_options.getScene());
     }
 
-    //creates the game, includes creating the board with tiles, meteorites & the player.
-    public Parent createGame() {
-        this.grid = new Tile[this.game_options.getXTileCount()][this.game_options.getYTileCount()];
-        this.comets = new Comet[this.game_options.getCometCount()];
-        this.planets = new Planet[this.game_options.getPlanetCount()];
-
-        StackPane root = new StackPane();
-        root.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
-        this.game = new Pane();
-        this.game.setPrefSize(STAGE_WIDTH, STAGE_HEIGHT);
-        this.go_menu = new Pane();
-        this.go_menu.setVisible(false);
-
-        //create score
-        String player_score = "Score: " + this.score;
-        this.score_text = new Label(player_score);
-        this.score_text.setFont(new Font(38));
-        StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
-
-        //create tiles with background + setting the neighbours of tiles.
-        Image tile_background = new Image (new File(RESOURCE_PATH + "space-background.png").toURI().toString());
-
-        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
-            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                Tile tile = new Tile(x, y, this.game_options.getTileSize(), tile_background);
-                grid[x][y] = tile;
-            }
-        }
-
-        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
-            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                grid[x][y].setNeighbours(this.getNeighbours(grid[x][y]));
-            }
-        }
-
-        //create player.
-        Image user_image = new Image (new File(RESOURCE_PATH + "spaceship.png").toURI().toString());
-        this.user = new User(user_image, grid[0][0], "up");
-        this.grid[0][0].setObject(this.user);
-
-        //creating Comets.
-        Image comet_image = new Image (new File(RESOURCE_PATH + "Meteorites.png").toURI().toString());
-        for(int i = 0; i < this.comets.length; i++) {
-            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
-            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
-
-            while (!this.grid[posX][posY].isAvailable()) {
-                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
-                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
-            }
-
-            this.comets[i] = new Comet(comet_image, grid[posX][posY]);
-            this.grid[posX][posY].setObject(this.comets[i]);
-        }
-
-        //creating planets
-        for (int i = 0; i < this.planets.length; i++) {
-            int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
-            int posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
-
-            while (!grid[posX][posY].isAvailable()) {
-                posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
-                posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
-            }
-
-            int random_image_index = ThreadLocalRandom.current().nextInt(1, 4);
-            Image planet_image = new Image(
-                    new File(RESOURCE_PATH + "planet0" + random_image_index +".png").toURI().toString()
-            );
-
-            this.planets[i] = new Planet(planet_image, this.grid[posX][posY]);
-            this.grid[posX][posY].setObject(this.planets[i]);
-        }
-
-        //updating game.
-        this.updateGame();
-
-        root.getChildren().addAll(this.game, this.score_text, this.go_menu);
-        return root;
-    }
-
-    //add an timer & set an input handler.
-    public void addHandlers() {
-        Timer timer = new Timer();
-        Main m = this;
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        score++;
-
-                        for (Comet c : comets) {
-                            c.update();
-                        }
-
-                        updateGame();
-                        if (Main.game_over || Main.game_won) {
-                            timer.cancel();
-                            setupGameOverMenu();
-                        }
-                    }
-                });
-            }
-        }, 0, 1000);
-
-        this.game_scene.setOnKeyPressed(event -> {
-            if (Main.game_over || Main.game_won) {
-                return;
-            }
-            this.user.handleKeyPressed(event.getCode());
-            int planets_visited = 0;
-            for (Planet planet : this.planets) {
-                if (planet.isVisited()) {
-                    planets_visited++;
-                }
-            }
-
-            if (!this.all_planets_visited && planets_visited == this.planets.length) {
-                this.all_planets_visited = true;
-                this.setWormhole();
-            }
-            this.updateGame();
-        });
-    }
-
-    public void setupGameOverMenu() {
-        this.go_menu.setVisible(true);
-
-        int game_width = (game_options.getTileSize() * game_options.getXTileCount()) / 2;
-        int game_height = (game_options.getTileSize() * game_options.getYTileCount()) / 2;
-
-        //announce label.
-        Image bg_image = new Image (new File(RESOURCE_PATH + "Menu/Window.png").toURI().toString());
-        ImageView bgv = new ImageView(bg_image);
-        bgv.setFitWidth(this.game.getWidth() / 3);
-        bgv.setFitHeight(this.game.getHeight() / 3);
-        Label background = new Label("",bgv);
-        background.setMinWidth(this.game.getWidth() / 3);
-        background.setMinHeight(this.game.getHeight() / 3);
-        background.setLayoutX(this.game.getWidth() / 3);
-        background.setLayoutY(this.game.getHeight() / 3);
-
-        //result label.
-        Image result_img = null;
-
-        if(Main.game_over) {
-            result_img = new Image(new File(RESOURCE_PATH + "Menu/Lose_Header.png").toURI().toString());
-        } else if(Main.game_won) {
-            result_img = new Image(new File(RESOURCE_PATH + "Menu/Win_Header.png").toURI().toString());
-        }
-
-        ImageView resultV = new ImageView(result_img);
-        Label result = new Label("", resultV);
-        result.setFont(new Font(25));
-        result.setTextFill(Color.WHITE);
-        result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        result.setLayoutY(background.getLayoutY());
-
-        //Score label.
-        Image score_Image = new Image (new File(RESOURCE_PATH + "Menu/Score.png").toURI().toString());
-        ImageView score_view = new ImageView(score_Image);
-        score_view.setFitWidth(background.getMinWidth() * 0.1);
-        score_view.setFitHeight(background.getMinHeight() * 0.1);
-        String score_text = ": " + this.score;
-        Label score = new Label(score_text, score_view);
-        score.setContentDisplay(ContentDisplay.LEFT);
-        score.setFont(new Font(25));
-        score.setTextFill(Color.WHITE);
-        score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
-
-        Image home_img = new Image (new File(RESOURCE_PATH + "Menu/Table.png").toURI().toString());
-        ImageView btnV = new ImageView(home_img);
-        btnV.setFitHeight(background.getMinHeight() * 0.2);
-        btnV.setFitWidth(background.getMinWidth() * 0.2);
-        Button home_button = new Button("Main Menu", btnV);
-        home_button.setContentDisplay(ContentDisplay.CENTER);
-        home_button.setStyle("-fx-background-color: transparent;");
-        home_button.setTextFill(Color.WHITE);
-        home_button.setFont(new Font(23));
-        home_button.setMinSize(background.getMinWidth() * 0.2, background.getHeight() * 0.2);
-        home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        home_button.setLayoutY(background.getLayoutY() * 1.7);
-        home_button.setOnAction(event -> {
-            this.game_scene = this.createMenuScene();
-            this.addHandlers();
-            this.stage.setScene(this.menu_scene);
-            resetGame();
-        });
-
-        this.go_menu.getChildren().addAll(background, result, score, home_button);
-    }
-
-    //creating wormhole after all planets have been visited.
-    public void setWormhole () {
-        int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
-        int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
-
-        while (!this.grid[random_x][random_y].isAvailable()) {
-            random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
-            random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
-        }
-
-        Image wormhole_image = new Image (
-            new File(RESOURCE_PATH + "wormhole.png").toURI().toString()
-        );
-
-        this.wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
-        this.grid[random_x][random_y].setObject(this.wormhole);
-    }
-
-    //get the neighbours of the parameter tile.
-    public List<Tile> getNeighbours (Tile tile) {
-        List<Tile> neighbors = new ArrayList<>();
-        Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
-
-        int[] points = new int[] {
-                0, -1, -1, 0, 1, 0, 0, 1
-        };
-
-        for (int i = 0; i < points.length; i++) {
-            int dx = points[i];
-            int dy = points[++i];
-
-            int newX = tile.getPosition_x() + dx;
-            int newY = tile.getPosition_y() + dy;
-
-            if (newX >= 0 && newX < this.game_options.getXTileCount() && newY >= 0 && newY < this.game_options.getYTileCount()) {
-                neighbors.add(this.grid[newX][newY]);
-            } else {
-                neighbors.add(emptyTile);
-            }
-        }
-
-        return neighbors;
-    }
-
-    //resetting game values
-    public void resetGame() {
-        Main.game_over = false;
-        Main.game_won = false;
-        this.score = -1;
-        this.all_planets_visited = false;
-    }
-
-    //update & Render
-    public void updateGame() {
-        if (!this.game.getChildren().isEmpty()) {
-            this.game.getChildren().clear();
-        }
-
-        for (int y = 0; y < this.game_options.getYTileCount(); y++) {
-            for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                this.game.getChildren().add(this.grid[x][y].getPane());
-            }
-        }
-
-        int game_size = this.game_options.getTileSize() * this.game_options.getXTileCount();
-
-        game.setTranslateX((STAGE_WIDTH * 0.5) - (game_size * 0.5));
-        game.setTranslateY((STAGE_HEIGHT * 0.5) - (game_size * 0.5));
-
-        this.score_text.setText("Score: " + this.score);
+    public void gotoGame() {
+        this.stage.setScene(new Game(this, this.game_options).getScene());
     }
 
     public static void main(String[] args) {
         Application.launch(args);
     }
+
+    public static String FullResourcePath(String file) {
+        return new File(Main.RESOURCE_PATH + file).toURI().toString();
+    }
+
 }
