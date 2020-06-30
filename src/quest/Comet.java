@@ -4,10 +4,8 @@ import javafx.scene.image.Image;
 
 public class Comet extends MovableObject {
 
-    public String[] POSITION = {"up", "left", "right", "down"};
+    private String[] POSITION = {"up", "left", "right", "down"};
     public int newPos = 0;
-    public boolean avail = false;
-
 
     public Comet(Image sprite, Tile tile) {
         super(sprite, tile);
@@ -15,26 +13,32 @@ public class Comet extends MovableObject {
 
     //updating Comet
     public void update() {
-
         //get random location.
         boolean loop_runing = true;
+
         while (loop_runing) {
             newPos = getRandom();
-
-            if (!this.getTile().getNeighbours().get(newPos).isAvailable()) {
+            if(checkDirectionAvailable(newPos))
+            {
                 loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
                 Game.game_over = !loop_runing;
-                avail = false;
-                newPos = getRandom();
             } else {
                 loop_runing = false;
-                avail = true;
             }
+
         }
 
         //move
         moveObject(POSITION[newPos]);
 
+    }
+
+    public boolean checkDirectionAvailable(int dir) {
+        if (this.getTile().getNeighbours().get(newPos).isAvailable()){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private int getRandom() {
