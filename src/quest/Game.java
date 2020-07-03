@@ -16,6 +16,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Game class.
+ * the class in which the game is made, played en terminated.
+ */
 public class Game {
 
     private Main main;
@@ -41,6 +45,14 @@ public class Game {
 
     public Scene scene;
 
+    /**
+     * Game.
+     * the Game class constructor.
+     * Sets up the variables for the game.
+     *
+     * @param main
+     * @param game_options
+     */
     public Game(Main main, GameOptions game_options) {
         this.main = main;
         this.game_options = game_options;
@@ -72,10 +84,25 @@ public class Game {
         this.addHandlers();
     }
 
+    /**
+     * GetScene.
+     * returns the scene of the class.
+     *
+     * @return
+     */
     public Scene getScene() {
         return this.scene;
     }
 
+    /**
+     * getNeighbours.
+     * The function that iterates through the arraylist of tiles,
+     * and puts all tiles around the current tile in a arrasylist
+     * and returns the arraylist with the neighbouring tiles.
+     *
+     * @param tile
+     * @return
+     */
     private List<Tile> getNeighbours (Tile tile) {
         List<Tile> neighbors = new ArrayList<>();
         Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
@@ -101,6 +128,11 @@ public class Game {
         return neighbors;
     }
 
+    /**
+     * GenerateScore.
+     * sets up the score.
+     *
+     */
     private void generateScore() {
         String player_score = "Score: " + this.score;
         this.score_text = new Label(player_score);
@@ -108,6 +140,10 @@ public class Game {
         StackPane.setAlignment(this.score_text, Pos.TOP_CENTER);
     }
 
+    /**
+     * GenerateGrid.
+     * sets up the grid with background on each tile.
+     */
     private void generateGrid() {
         Image tile_background = new Image(Main.FullResourcePath("space-background.png"));
 
@@ -124,12 +160,21 @@ public class Game {
         }
     }
 
+    /**
+     * GenerateUser.
+     * sets up player and puts it in the grid.
+     */
     private void generateUser() {
         Image user_image = new Image (Main.FullResourcePath("spaceship.png"));
         this.user = new User(user_image, grid[0][0], "up");
         this.grid[0][0].setObject(this.user);
     }
 
+    /**
+     * GenerateComets.
+     * generates a numbers of comets equal to the inputted game options.
+     * gives them an random position and puts them in the grid.
+     */
     private void generateComets() {
         Image comet_image = new Image(Main.FullResourcePath("Meteorites.png"));
 
@@ -147,6 +192,12 @@ public class Game {
         }
     }
 
+    /**
+     * GeneratePlanets.
+     * generates a numbers of comets equal to the inputted game options.
+     * gives them an random position and puts them in the grid.
+     *
+     */
     private void generatePlanets() {
         for (int i = 0; i < this.planets.length; i++) {
             int posX = ThreadLocalRandom.current().nextInt(1, this.game_options.getXTileCount());
@@ -166,6 +217,10 @@ public class Game {
         }
     }
 
+    /**
+     * Update.
+     * update the grid, player, comets, planets & score.
+     */
     protected void update() {
         if (!this.game.getChildren().isEmpty()) {
             this.game.getChildren().clear();
@@ -186,6 +241,14 @@ public class Game {
         this.score_text.setText("Score: " + this.score);
     }
 
+    /**
+     * AddHandlers.
+     * adds handlers to the game.
+     * adds and runs the timer for the game.
+     * adds input functions for the player.
+     * Checks for a game over or game win.
+     *
+     */
     private void addHandlers() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -240,6 +303,11 @@ public class Game {
         });
     }
 
+    /**
+     * setupGameOverMenu.
+     * creates the game over/win popup menu.
+     *
+     */
     public void setupGameOverMenu() {
         this.go_menu.setVisible(true);
 
@@ -285,12 +353,21 @@ public class Game {
         this.go_menu.getChildren().addAll(background, result, score, home_button);
     }
 
+    /**
+     * Reset.
+     * resets variables for restarting the game.
+     */
     private void reset() {
         Game.game_over = false;
         Game.game_won = false;
         all_planets_visited = false;
     }
 
+    /**
+     * SetWormhole.
+     * sets up a wormhole when all planets has been visited.
+     * gives it a sprite and a random position and puts it in the grid.
+     */
     public void setWormhole () {
         int random_x = ThreadLocalRandom.current().nextInt(0, this.game_options.getXTileCount());
         int random_y = ThreadLocalRandom.current().nextInt(0, this.game_options.getYTileCount());
@@ -306,14 +383,32 @@ public class Game {
         this.grid[random_x][random_y].setObject(wormhole);
     }
 
+    /**
+     * GetGrid.
+     * return the grid.
+     *
+     * @return
+     */
     public Tile[][] getGrid() {
         return this.grid;
     }
 
+    /**
+     * GetComets.
+     * returns the comet arrayList.
+     *
+     * @return
+     */
     public Comet[] getComets() {
         return this.comets;
     }
 
+    /**
+     * GetPlanets.
+     * returns the planet arrayList.
+     *
+     * @return
+     */
     public Planet[] getPlanets() {
         return this.planets;
     }
