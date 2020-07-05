@@ -288,6 +288,7 @@ public class Game {
     private void reset() {
         Game.game_over = false;
         Game.game_won = false;
+        all_planets_visited = false;
     }
 
     public void setWormhole () {
