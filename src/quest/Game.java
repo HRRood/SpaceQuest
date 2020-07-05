@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +24,11 @@ public class Game {
     protected Tile[][] grid;
     protected Comet[] comets;
     protected Planet[] planets;
+    protected Wormhole wormhole;
     protected User user;
     protected Timer timer;
 
-    protected Wormhole wormhole;
-
+    public Scene scene;
     private Pane game;
     private Pane go_menu;
     private Label score_text;
@@ -38,8 +37,6 @@ public class Game {
     public static boolean game_over = false;
     public static boolean game_won = false;
     public static boolean all_planets_visited = false;
-
-    public Scene scene;
 
     public Game(Main main, GameOptions game_options) {
         this.main = main;
@@ -80,9 +77,7 @@ public class Game {
         List<Tile> neighbors = new ArrayList<>();
         Tile emptyTile = new Tile(-1, -1, this.game_options.getTileSize(), null);
 
-        int[] points = new int[] {
-                0, -1, -1, 0, 1, 0, 0, 1
-        };
+        int[] points = new int[] {0, -1, -1, 0, 1, 0, 0, 1};
 
         for (int i = 0; i < points.length; i++) {
             int dx = points[i];
@@ -113,20 +108,20 @@ public class Game {
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                grid[x][y] = new Tile(x, y, this.game_options.getTileSize(), tile_background);
+                this.grid[x][y] = new Tile(x, y, this.game_options.getTileSize(), tile_background);
             }
         }
 
         for (int y = 0; y < this.game_options.getYTileCount(); y++) {
             for (int x = 0; x < this.game_options.getXTileCount(); x++) {
-                grid[x][y].setNeighbours(this.getNeighbours(grid[x][y]));
+                this.grid[x][y].setNeighbours(this.getNeighbours(this.grid[x][y]));
             }
         }
     }
 
     private void generateUser() {
         Image user_image = new Image (Main.FullResourcePath("spaceship.png"));
-        this.user = new User(user_image, grid[0][0], "up");
+        this.user = new User(user_image, this.grid[0][0], "up");
         this.grid[0][0].setObject(this.user);
     }
 
@@ -142,7 +137,7 @@ public class Game {
                 posY = ThreadLocalRandom.current().nextInt(1, this.game_options.getYTileCount());
             }
 
-            this.comets[i] = new Comet(comet_image, grid[posX][posY]);
+            this.comets[i] = new Comet(comet_image, this.grid[posX][posY]);
             this.grid[posX][posY].setObject(this.comets[i]);
         }
     }
@@ -187,8 +182,8 @@ public class Game {
     }
 
     private void addHandlers() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        this.timer = new Timer();
+        this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
             Platform.runLater(() -> {
@@ -303,7 +298,7 @@ public class Game {
         Image wormhole_image = new Image(Main.FullResourcePath("wormhole.png"));
 
         wormhole = new Wormhole(wormhole_image, this.grid[random_x][random_y]);
-        this.grid[random_x][random_y].setObject(wormhole);
+        this.grid[random_x][random_y].setObject(this.wormhole);
     }
 
     public Tile[][] getGrid() {
