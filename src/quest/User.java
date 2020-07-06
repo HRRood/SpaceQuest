@@ -33,22 +33,22 @@ public class User extends MovableObject {
         switch (code) {
             case W:
             case UP: {
-                moveObject("up");
+                this.moveObject("up");
                 break;
             }
             case S:
             case DOWN: {
-                moveObject("down");
+                this.moveObject("down");
                 break;
             }
             case A:
             case LEFT: {
-                moveObject("left");
+                this.moveObject("left");
                 break;
             }
             case D:
             case RIGHT: {
-                moveObject("right");
+                this.moveObject("right");
                 break;
             }
         }

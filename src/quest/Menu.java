@@ -58,12 +58,7 @@ public class Menu {
             }
         });
 
-        VBox menu_buttons = new VBox(
-                text,
-                start_button,
-                options_button,
-                exit_button
-        );
+        VBox menu_buttons = new VBox(text, start_button, options_button, exit_button);
         menu_buttons.setSpacing(10);
         menu_buttons.setAlignment(Pos.CENTER);
 
