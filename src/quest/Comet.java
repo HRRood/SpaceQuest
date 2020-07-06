@@ -30,16 +30,16 @@ public class Comet extends MovableObject {
     //updating Comet
     public void update() {
         //get random location.
-        boolean loop_runing = true;
+        boolean loop_running = true;
 
-        while (loop_runing) {
+        while (loop_running) {
             newPos = getRandom();
             if(checkDirectionAvailable(newPos))
             {
-                loop_runing = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
-                Game.game_over = !loop_runing;
+                loop_running = getCollision(this.getTile().getNeighbours().get(newPos)) == null;
+                Game.game_over = !loop_running;
             } else {
-                loop_runing = false;
+                loop_running = false;
             }
 
         }
