@@ -42,8 +42,6 @@ public class Game {
     public static boolean game_won = false;
     public static boolean all_planets_visited = false;
 
-    public Scene scene;
-
     /**
      * Game.
      * the Game class constructor.
