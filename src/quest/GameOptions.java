@@ -112,28 +112,28 @@ public class GameOptions {
         title.setFont(Main.FONT_130);
 
         Label x_tile_count_label = this.newLabel("Tiles in width: %d", this.x_tiles);
-        Slider x_tile_count_slider = this.newSlider(12, 24, this.x_tiles, (e, o, n) ->
-            this.x_tiles = this.updateLabel(x_tile_count_label, "Tiles in width: %d", n.intValue())
+        Slider x_tile_count_slider = this.newSlider(12, 20, this.x_tiles, (observable, previous_value, new_value) ->
+            this.x_tiles = this.updateLabel(x_tile_count_label, "Tiles in width: %d", new_value.intValue())
         );
 
         Label y_tile_count_label = this.newLabel("Tiles in height: %d", this.y_tiles);
-        Slider y_tile_count_slider = this.newSlider(12, 24, this.y_tiles, (e, o, n) ->
-            this.y_tiles = this.updateLabel(y_tile_count_label, "Tiles in height: %d", n.intValue())
+        Slider y_tile_count_slider = this.newSlider(12, 20, this.y_tiles, (observable, previous_value, new_value) ->
+            this.y_tiles = this.updateLabel(y_tile_count_label, "Tiles in height: %d", new_value.intValue())
         );
 
         Label tile_size_label = this.newLabel("Tile size: %d", this.tile_size);
-        Slider tile_size_slider = this.newSlider(30, 60, this.tile_size, (e, o, n) ->
-            this.tile_size = this.updateLabel(tile_size_label, "Tile size: %d", n.intValue())
+        Slider tile_size_slider = this.newSlider(30, 60, this.tile_size, (observable, previous_value, new_value) ->
+            this.tile_size = this.updateLabel(tile_size_label, "Tile size: %d", new_value.intValue())
         );
 
         Label planet_count_label = this.newLabel("Planets: %d", this.planet_count);
-        Slider planet_count_slider = this.newSlider(3, 15, this.planet_count, (e, o, n) ->
-            this.planet_count = this.updateLabel(planet_count_label, "Planets: %d", n.intValue())
+        Slider planet_count_slider = this.newSlider(3, 15, this.planet_count, (observable, previous_value, new_value) ->
+            this.planet_count = this.updateLabel(planet_count_label, "Planets: %d", new_value.intValue())
         );
 
         Label comet_count_label = this.newLabel("Comets: %d", this.comet_count);
-        Slider comet_count_slider = this.newSlider(5, 10, this.comet_count, (e, o, n) ->
-            this.comet_count = this.updateLabel(comet_count_label, "Comets: %d", n.intValue())
+        Slider comet_count_slider = this.newSlider(5, 10, this.comet_count, (observable, previous_value, new_value) ->
+            this.comet_count = this.updateLabel(comet_count_label, "Comets: %d", new_value.intValue())
         );
 
         Button save_and_go_back = new Button("Save and go back");
@@ -142,13 +142,13 @@ public class GameOptions {
         save_and_go_back.setOnAction(e -> main.gotoMenu());
 
         VBox options_box = new VBox(
-                title,
-                x_tile_count_label, x_tile_count_slider,
-                y_tile_count_label, y_tile_count_slider,
-                tile_size_label, tile_size_slider,
-                planet_count_label, planet_count_slider,
-                comet_count_label, comet_count_slider,
-                save_and_go_back
+            title,
+            x_tile_count_label, x_tile_count_slider,
+            y_tile_count_label, y_tile_count_slider,
+            tile_size_label, tile_size_slider,
+            planet_count_label, planet_count_slider,
+            comet_count_label, comet_count_slider,
+            save_and_go_back
         );
         options_box.setSpacing(10);
         options_box.setAlignment(Pos.CENTER);
@@ -165,9 +165,7 @@ public class GameOptions {
      * @return
      */
     private Label newLabel(String format, int value) {
-        Label label = new Label(
-                String.format(format, value)
-        );
+        Label label = new Label(String.format(format, value));
         label.setFont(Main.FONT_20);
 
         return label;
@@ -204,9 +202,7 @@ public class GameOptions {
      * @return
      */
     private int updateLabel(Label label, String format, int value) {
-        label.setText(
-                String.format(format, value)
-        );
+        label.setText(String.format(format, value));
 
         return value;
     }

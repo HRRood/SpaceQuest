@@ -23,9 +23,9 @@ public class Tile {
 
     private List<Tile> neighbours;
     private Object[] object = new Object[2];
+
     private ImageView object_view;
     private ImageView top_user_view;
-
     private StackPane pane;
     private Rectangle rect;
 
@@ -48,10 +48,11 @@ public class Tile {
         this.pane = new StackPane();
         this.rect = new Rectangle(this.size + 1, this.size + 1);
 
-        if (position_x == -1 || position_y == -1) {
-            isAvailable = false;
+        if (this.position_x == -1 || this.position_y == -1) {
+            this.isAvailable = false;
         }
-        createTile();
+
+        this.createTile();
     }
 
     /**
@@ -64,11 +65,12 @@ public class Tile {
         if(this.position_y < 0 && this.position_x < 0) {
             return;
         }
-        rect.setFill(new ImagePattern(this.background));
-        rect.setStroke(Color.TRANSPARENT);
-        rect.setTranslateX(position_x * this.size);
-        rect.setTranslateY(position_y * this.size);
-        this.pane.getChildren().add(rect);
+
+        this.rect.setFill(new ImagePattern(this.background));
+        this.rect.setStroke(Color.TRANSPARENT);
+        this.rect.setTranslateX(this.position_x * this.size);
+        this.rect.setTranslateY(this.position_y * this.size);
+        this.pane.getChildren().add(this.rect);
     }
 
     /**
@@ -79,7 +81,7 @@ public class Tile {
      * @return
      */
     public StackPane getPane() {
-        updateObject();
+        this.updateObject();
         return pane;
     }
 
@@ -89,37 +91,40 @@ public class Tile {
      * variables.
      */
     public void updateObject () {
-        this.pane.getChildren().removeAll(object_view, top_user_view);
-        if (object[0] == null) {
+
+        this.pane.getChildren().removeAll(this.object_view, this.top_user_view);
+        if (this.object[0] == null) {
             return;
         }
 
-        object_view = new ImageView(object[0].getSprite());
-        object_view.setFitWidth(this.size * 0.8);
-        object_view.setFitHeight(this.size * 0.8);
-        object_view.setTranslateX(position_x * this.size);
-        object_view.setTranslateY(position_y * this.size);
+        this.object_view = new ImageView(this.object[0].getSprite());
+        this.object_view.setFitWidth(this.size * 0.8);
+        this.object_view.setFitHeight(this.size * 0.8);
+        this.object_view.setTranslateX(this.position_x * this.size);
+        this.object_view.setTranslateY(this.position_y * this.size);
 
-        if (object[0] instanceof MovableObject) {
-            object_view.setRotate(((MovableObject) object[0]).getDirection());
+        if (this.object[0] instanceof MovableObject) {
+            this.object_view.setRotate(((MovableObject) this.object[0]).getDirection());
         }
 
-        if (object[0] instanceof Planet && ((Planet) object[0]).isVisited()) {
+        if (this.object[0] instanceof Planet && ((Planet) this.object[0]).isVisited()) {
             ColorAdjust colorAdjust = new ColorAdjust();
             colorAdjust.setBrightness(-0.5);
+
             object_view.setEffect(colorAdjust);
         }
 
         this.pane.getChildren().add(object_view);
 
-        if (object[1] != null && object[1] instanceof User) {
-            top_user_view = new ImageView(object[1].getSprite());
-            top_user_view.setFitWidth(this.size * 0.8);
-            top_user_view.setFitHeight(this.size * 0.8);
-            top_user_view.setTranslateX(position_x * this.size);
-            top_user_view.setTranslateY(position_y * this.size);
-            top_user_view.setRotate(((MovableObject) object[1]).getDirection());
-            this.pane.getChildren().add(top_user_view);
+
+        if (this.object[1] != null && this.object[1] instanceof User) {
+            this.top_user_view = new ImageView(this.object[1].getSprite());
+            this.top_user_view.setFitWidth(this.size * 0.8);
+            this.top_user_view.setFitHeight(this.size * 0.8);
+            this.top_user_view.setTranslateX(this.position_x * this.size);
+            this.top_user_view.setTranslateY(this.position_y * this.size);
+            this.top_user_view.setRotate(((MovableObject) this.object[1]).getDirection());
+            this.pane.getChildren().add(this.top_user_view);
         }
     }
 
@@ -182,9 +187,9 @@ public class Tile {
      * @param object
      */
     public void setObject(Object object) {
-        isAvailable = false;
         if (this.object[0] == null) {
             this.object[0] = object;
+            this.isAvailable = false;
         }
         if (this.object[0] instanceof Planet && object instanceof User) {
             this.object[1] = object;
@@ -201,7 +206,7 @@ public class Tile {
             this.object[1] = null;
         } else {
             this.object[0] = null;
-            isAvailable = true;
+            this.isAvailable = true;
         }
     }
 
