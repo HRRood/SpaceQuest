@@ -6,6 +6,10 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.File;
 
+/**
+ *  Main Class.
+ *  the class that initializes everything for starting up the application/Game.
+ */
 public class Main extends Application {
 
     public static final String RESOURCE_PATH = "src/quest/Resources/";
@@ -25,6 +29,14 @@ public class Main extends Application {
     public GameOptions game_options;
     public Game game;
 
+    /**
+     * Start.
+     * The JavaFX start class that initialize JavaFX.
+     * this class also initializes Scenes that will be used.
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -38,28 +50,62 @@ public class Main extends Application {
         this.gotoMenu();
     }
 
+    /**
+     * Stop.
+     * The JavaFx stop class that terminates JavaFX.
+     *
+     * @throws Exception
+     */
     @Override
     public void stop() throws Exception {
         this.stage.close();
     }
 
+    /**
+     * gotoMenu.
+     * The function that sets the Menu scene in the Stage.
+     *
+     */
     public void gotoMenu() {
         this.stage.setScene(this.menu.getScene());
     }
 
+    /**
+     * gotoGameOptions
+     * The function that sets the options for the game in the stage.
+     *
+     */
     public void gotoGameOptions() {
         this.stage.setScene(this.game_options.getScene());
     }
 
+    /**
+     * gotoGame.
+     * The Function that initializes the game and sets it in the stage.
+     *
+     */
     public void gotoGame() {
         this.game = new Game(this, this.game_options);
         this.stage.setScene(this.game.getScene());
     }
 
+    /**
+     * main.
+     * the main function that launches JavaFX start function.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Application.launch(args);
     }
 
+    /**
+     * FullResourcePath.
+     * a String function that return the path to the resource map.
+     *
+     * @param file
+     * @return
+     */
     public static String FullResourcePath(String file) {
         return new File(Main.RESOURCE_PATH + file).toURI().toString();
     }

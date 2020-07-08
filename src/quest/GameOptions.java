@@ -10,6 +10,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+/**
+ * GameOptions.
+ * The class in which the user can set up and change the game default options.
+ */
 public class GameOptions {
 
     private int x_tiles;
@@ -20,6 +24,13 @@ public class GameOptions {
 
     private Scene scene;
 
+    /**
+     * GameOptions.
+     * the Gameoptions class constructor.
+     * initializes the default options for the game.
+     *
+     * @param main
+     */
     public GameOptions(Main main) {
         this.x_tiles = 12;
         this.y_tiles = 12;
@@ -30,30 +41,72 @@ public class GameOptions {
         this.constructScene(main);
     }
 
+    /**
+     * GetXTileCount.
+     * returns variable x_tiles.
+     *
+     * @return
+     */
     public int getXTileCount() {
         return this.x_tiles;
     }
 
+    /**
+     * GetYTileCount.
+     * returns variable y_tiles.
+     *
+     * @return
+     */
     public int getYTileCount() {
         return this.y_tiles;
     }
 
+    /**
+     * GetTilesSize.
+     * returns variable tile_size.
+     *
+     * @return
+     */
     public int getTileSize() {
         return this.tile_size;
     }
 
+    /**
+     * GetPlanetCount.
+     * returns variable planet_count.
+     *
+     * @return
+     */
     public int getPlanetCount() {
         return this.planet_count;
     }
 
+    /**
+     * GetCometCount.
+     * returns variable comet_count.
+     *
+     * @return
+     */
     public int getCometCount() {
         return this.comet_count;
     }
 
+    /**
+     * GetScene.
+     * returns the scene of the class.
+     *
+     * @return
+     */
     public Scene getScene() {
         return this.scene;
     }
 
+    /**
+     * constructScene.
+     * initializes the scene for the game options.
+     *
+     * @param main
+     */
     private void constructScene(Main main) {
         Text title = new Text("Game Options");
         title.setFont(Main.FONT_130);
@@ -103,6 +156,14 @@ public class GameOptions {
         this.scene = new Scene(options_box, Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Color.DARKGRAY);
     }
 
+    /**
+     * NewLabel.
+     * makes an Label with the variables from the parameters.
+     *
+     * @param format
+     * @param value
+     * @return
+     */
     private Label newLabel(String format, int value) {
         Label label = new Label(String.format(format, value));
         label.setFont(Main.FONT_20);
@@ -110,6 +171,16 @@ public class GameOptions {
         return label;
     }
 
+    /**
+     * NewSlider.
+     * makes an slider with the variables from the parameters.
+     *
+     * @param min
+     * @param max
+     * @param value
+     * @param change_listener
+     * @return
+     */
     private Slider newSlider(int min, int max, int value, ChangeListener<Number> change_listener) {
         Slider slider = new Slider(min, max, value);
         slider.setMaxWidth(Main.STAGE_WIDTH * .3);
@@ -121,6 +192,15 @@ public class GameOptions {
         return slider;
     }
 
+    /**
+     * UpdateLabel.
+     * updates an parameter given label with new variables.
+     *
+     * @param label
+     * @param format
+     * @param value
+     * @return
+     */
     private int updateLabel(Label label, String format, int value) {
         label.setText(String.format(format, value));
 

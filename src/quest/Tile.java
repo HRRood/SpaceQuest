@@ -9,6 +9,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import java.util.List;
 
+/**
+ * Tile class.
+ * the class of which the grid has been created
+ * and all game object move maneuver.
+ */
 public class Tile {
     private int position_x;
     private int position_y;
@@ -19,11 +24,21 @@ public class Tile {
     private List<Tile> neighbours;
     private Object[] object = new Object[2];
 
-    private ImageView objectview;
+    private ImageView object_view;
     private ImageView top_user_view;
     private StackPane pane;
     private Rectangle rect;
 
+    /**
+     * Tile class constructor.
+     * sets up the tile object. the position, size, background image
+     * and if it is available yes or no.
+     *
+     * @param x
+     * @param y
+     * @param size
+     * @param background
+     */
     public Tile(int x, int y, int size, Image background) {
         this.position_x = x;
         this.position_y = y;
@@ -37,10 +52,16 @@ public class Tile {
             this.isAvailable = false;
         }
 
-        this.creatTile();
+        this.createTile();
     }
 
-    private void creatTile() {
+    /**
+     * CreateTile.
+     * creates the tile with the class variables,
+     * that are set up by the constructor.
+     *
+     */
+    private void createTile() {
         if(this.position_y < 0 && this.position_x < 0) {
             return;
         }
@@ -52,34 +73,49 @@ public class Tile {
         this.pane.getChildren().add(this.rect);
     }
 
+    /**
+     * GetPane.
+     * calls the updateObject function
+     * and returns the pane of the object.
+     *
+     * @return
+     */
     public StackPane getPane() {
         this.updateObject();
         return pane;
     }
 
+    /**
+     * UpdateObject.
+     * Updates the tile, removes all children and puts them back up with updated
+     * variables.
+     */
     public void updateObject () {
-        this.pane.getChildren().removeAll(this.objectview, this.top_user_view);
+
+        this.pane.getChildren().removeAll(this.object_view, this.top_user_view);
         if (this.object[0] == null) {
             return;
         }
 
-        this.objectview = new ImageView(this.object[0].getSprite());
-        this.objectview.setFitWidth(this.size * 0.8);
-        this.objectview.setFitHeight(this.size * 0.8);
-        this.objectview.setTranslateX(this.position_x * this.size);
-        this.objectview.setTranslateY(this.position_y * this.size);
+        this.object_view = new ImageView(this.object[0].getSprite());
+        this.object_view.setFitWidth(this.size * 0.8);
+        this.object_view.setFitHeight(this.size * 0.8);
+        this.object_view.setTranslateX(this.position_x * this.size);
+        this.object_view.setTranslateY(this.position_y * this.size);
 
         if (this.object[0] instanceof MovableObject) {
-            this.objectview.setRotate(((MovableObject) this.object[0]).getDirection());
+            this.object_view.setRotate(((MovableObject) this.object[0]).getDirection());
         }
 
         if (this.object[0] instanceof Planet && ((Planet) this.object[0]).isVisited()) {
             ColorAdjust colorAdjust = new ColorAdjust();
             colorAdjust.setBrightness(-0.5);
-            this.objectview.setEffect(colorAdjust);
+
+            object_view.setEffect(colorAdjust);
         }
 
-        this.pane.getChildren().add(this.objectview);
+        this.pane.getChildren().add(object_view);
+
 
         if (this.object[1] != null && this.object[1] instanceof User) {
             this.top_user_view = new ImageView(this.object[1].getSprite());
@@ -92,26 +128,64 @@ public class Tile {
         }
     }
 
+    /**
+     * SetNeighbours.
+     * puts the given parameter list into the object neighbours array.
+     * sets all neighbouring tiles in the array.
+     *
+     * @param neighbours
+     */
     public void setNeighbours(List<Tile> neighbours) {
         this.neighbours = neighbours;
     }
 
+    /**
+     * getNeighbours.
+     * returns the neighbours arrayList variable.
+     *
+     * @return
+     */
     public List<Tile> getNeighbours() {
         return neighbours;
     }
 
+    /**
+     * getPosition_X.
+     * return variable position_x.
+     *
+     * @return
+     */
     public int getPosition_x() {
         return position_x;
     }
 
+    /**
+     * getPosition_Y.
+     * return variable position_y.
+     *
+     * @return
+     */
     public int getPosition_y() {
         return position_y;
     }
 
+    /**
+     * isAvailable.
+     * returns variable isAvailable.
+     *
+     * @return
+     */
     public boolean isAvailable() {
         return isAvailable;
     }
 
+    /**
+     * SetObject.
+     * set the object that is given with the parameter
+     * as the object that is on top of this tile.
+     * sets availability on false.
+     * @param object
+     */
     public void setObject(Object object) {
         if (this.object[0] == null) {
             this.object[0] = object;
@@ -122,6 +196,11 @@ public class Tile {
         }
     }
 
+    /**
+     * emptyTile.
+     * empties the tile.
+     * and sets availability back to true.
+     */
     public void emptyTile() {
         if (this.object[1] != null) {
             this.object[1] = null;
@@ -131,6 +210,12 @@ public class Tile {
         }
     }
 
+    /**
+     * getObject.
+     * return the object that is current on top of the tile.
+     *
+     * @return
+     */
     public Object[] getObject () {
         return this.object;
     }

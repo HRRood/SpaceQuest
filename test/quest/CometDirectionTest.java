@@ -43,13 +43,16 @@ public class CometDirectionTest {
 
 
                             m.game.comets[0].newPos = 1;
-                            shouldNot = m.game.comets[0].avail;
-                            m.game.comets[0].update();
+                            shouldNot = m.game.comets[0].checkDirectionAvailable(m.game.comets[0].newPos);
 
                             m.game.comets[0].update();
 
-                            should = m.game.comets[0].avail;
 
+                            if (m.game.comets[0].newPos != 1) {
+                                should = !m.game.comets[0].checkDirectionAvailable(m.game.comets[0].newPos);
+                            } else {
+                                m.game.comets[0].update();
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
