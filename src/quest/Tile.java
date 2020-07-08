@@ -23,7 +23,7 @@ public class Tile {
 
     private List<Tile> neighbours;
     private Object[] object = new Object[2];
-    private ImageView objectview;
+    private ImageView object_view;
     private ImageView top_user_view;
 
     private StackPane pane;
@@ -89,28 +89,28 @@ public class Tile {
      * variables.
      */
     public void updateObject () {
-        this.pane.getChildren().removeAll(objectview, top_user_view);
+        this.pane.getChildren().removeAll(object_view, top_user_view);
         if (object[0] == null) {
             return;
         }
 
-        objectview = new ImageView(object[0].getSprite());
-        objectview.setFitWidth(this.size * 0.8);
-        objectview.setFitHeight(this.size * 0.8);
-        objectview.setTranslateX(position_x * this.size);
-        objectview.setTranslateY(position_y * this.size);
+        object_view = new ImageView(object[0].getSprite());
+        object_view.setFitWidth(this.size * 0.8);
+        object_view.setFitHeight(this.size * 0.8);
+        object_view.setTranslateX(position_x * this.size);
+        object_view.setTranslateY(position_y * this.size);
 
         if (object[0] instanceof MovableObject) {
-            objectview.setRotate(((MovableObject) object[0]).getDirection());
+            object_view.setRotate(((MovableObject) object[0]).getDirection());
         }
 
         if (object[0] instanceof Planet && ((Planet) object[0]).isVisited()) {
             ColorAdjust colorAdjust = new ColorAdjust();
             colorAdjust.setBrightness(-0.5);
-            objectview.setEffect(colorAdjust);
+            object_view.setEffect(colorAdjust);
         }
 
-        this.pane.getChildren().add(objectview);
+        this.pane.getChildren().add(object_view);
 
         if (object[1] != null && object[1] instanceof User) {
             top_user_view = new ImageView(object[1].getSprite());

@@ -27,7 +27,6 @@ public class Comet extends MovableObject {
      * Update function.
      * loops until the comet has an available direction to move to.
      */
-    //updating Comet
     public void update() {
         //get random location.
         boolean loop_running = true;
@@ -54,11 +53,11 @@ public class Comet extends MovableObject {
      * Checks if the parameter direction is available,
      * give back an true or false depending on the direction.
      *
-     * @param dir
+     * @param direction
      * @return
      */
-    public boolean checkDirectionAvailable(int dir) {
-        if (this.getTile().getNeighbours().get(newPos).isAvailable()){
+    public boolean checkDirectionAvailable(int direction) {
+        if (this.getTile().getNeighbours().get(direction).isAvailable()){
             return false;
         }else{
             return true;
