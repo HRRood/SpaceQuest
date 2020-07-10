@@ -22,7 +22,7 @@ public class Galaxy {
     private final Scene scene;
     private VBox vBox;
 
-    private Tile[] tiles;
+    private Tile[][] tiles;
     private Planet[] planets;
     private Comet[] comets;
     private Wormhole wormhole;
@@ -44,29 +44,30 @@ public class Galaxy {
     }
 
     private void generateTiles() {
-        int denominator = this.quest.getDifficulty().tileCount;
-        int upperBound = denominator * denominator;
-
-        this.tiles = new Tile[upperBound];
+        this.tiles = new Tile[this.quest.getDifficulty().xTileCount][this.quest.getDifficulty().yTileCount];
 
         Image backgroundImage = new Image(Game.GetFile("img/tile.png").toURI().toString());
-        for (int i = 0; i < upperBound; i++) {
-            this.tiles[i] = new Tile(this.quest, backgroundImage);
+        for (int x = 0; x < this.quest.getDifficulty().xTileCount; x++) {
+            for (int y = 0; y < this.quest.getDifficulty().yTileCount; y++) {
+                this.tiles[x][y] = new Tile(this.quest, backgroundImage);
+            }
         }
 
-        for (int i = 0; i < upperBound; i++) {
-            this.tiles[i].neighbours.top = ((i + 1) - denominator) > 0 ? this.tiles[i - denominator] : null;
-            this.tiles[i].neighbours.right = (i + 1) < upperBound && (i + 1) % denominator != 0 ? this.tiles[(i + 1)] : null;
-            this.tiles[i].neighbours.bottom = (i + denominator) < upperBound ? this.tiles[i + denominator] : null;
-            this.tiles[i].neighbours.left = i != 0 && i % denominator != 0 ? this.tiles[i - 1] : null;
+        for (int x = 0; x < this.quest.getDifficulty().xTileCount; x++) {
+            for (int y = 0; y < this.quest.getDifficulty().yTileCount; y++) {
+                this.tiles[x][y].neighbours.top = (y - 1) >= 0 ?  tiles[x][y-1] : null;
+                this.tiles[x][y].neighbours.right = (x + 1) < this.quest.getDifficulty().xTileCount ? tiles[x+1][y] : null;
+                this.tiles[x][y].neighbours.bottom = (y + 1) < this.quest.getDifficulty().yTileCount ?  tiles[x][y+1] : null;
+                this.tiles[x][y].neighbours.left = (x - 1) >= 0 ?  tiles[x-1][y] : null;
+            }
         }
     }
 
     private void generateSpaceShip() {
         Image sprite = new Image(Game.GetFile("img/space_ship.png").toURI().toString());
 
-        this.spaceShip = new SpaceShip(sprite, this.tiles[0], Direction.RIGHT);
-        this.tiles[0].objects.spaceShip = this.spaceShip;
+        this.spaceShip = new SpaceShip(sprite, this.tiles[0][0], Direction.RIGHT);
+        this.tiles[0][0].objects.spaceShip = this.spaceShip;
     }
 
     private void generatePlanets() {
@@ -78,14 +79,9 @@ public class Galaxy {
         sprites[2] = new Image(Game.GetFile("img/planet_2.png").toURI().toString());
 
         for (int i = 0; i < this.quest.getDifficulty().planetCount; i++) {
-            int randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-
-            while (!this.tiles[randomInt].isAvailable()) {
-                randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-            }
-
-            this.planets[i] = new Planet(sprites[Game.RandomInt(0, 3)], this.tiles[randomInt]);
-            this.tiles[randomInt].objects.planet = this.planets[i];
+            Tile tile = this.randomTile();
+            this.planets[i] = new Planet(sprites[Game.RandomInt(0, 3)], tile);
+            tile.objects.planet = this.planets[i];
         }
     }
 
@@ -95,14 +91,9 @@ public class Galaxy {
         Image sprite = new Image(Game.GetFile("img/comet.png").toURI().toString());
 
         for (int i = 0; i < this.quest.getDifficulty().cometCount; i++) {
-            int randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-
-            while (!this.tiles[randomInt].isAvailable()) {
-                randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-            }
-
-            this.comets[i] = new Comet(sprite, this.tiles[randomInt]);
-            this.tiles[randomInt].objects.comet = this.comets[i];
+            Tile tile = this.randomTile();
+            this.comets[i] = new Comet(sprite, tile);
+            tile.objects.comet = this.comets[i];
         }
     }
 
@@ -112,28 +103,18 @@ public class Galaxy {
         Image sprite = new Image(Game.GetFile("img/space_pirate.png").toURI().toString());
 
         for (int i = 0; i < this.quest.getDifficulty().spacePirateCount; i++) {
-            int randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-
-            while (!this.tiles[randomInt].isAvailable()) {
-                randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-            }
-
-            this.spacePirates[i] = new SpacePirate(sprite, this.tiles[randomInt], Direction.RIGHT);
-            this.tiles[randomInt].objects.spacePirate = this.spacePirates[i];
+            Tile tile = this.randomTile();
+            this.spacePirates[i] = new SpacePirate(sprite, tile, Direction.RIGHT);
+            tile.objects.spacePirate = this.spacePirates[i];
         }
     }
 
     public void generateWormhole() {
         Image sprite = new Image(Game.GetFile("img/wormhole.png").toURI().toString());
 
-        int randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-
-        while (!this.tiles[randomInt].isAvailable()) {
-            randomInt = Game.RandomInt(0, this.quest.getDifficulty().tileCount * this.quest.getDifficulty().tileCount);
-        }
-
-        this.wormhole = new Wormhole(sprite, this.tiles[randomInt]);
-        this.tiles[randomInt].objects.wormhole = this.wormhole;
+        Tile tile = this.randomTile();
+        this.wormhole = new Wormhole(sprite, tile);
+        tile.objects.wormhole = this.wormhole;
     }
 
     public Scene render() {
@@ -204,9 +185,9 @@ public class Galaxy {
         gridPane.setMinSize(this.quest.game.stage.getWidth() * .8, this.quest.game.stage.getHeight() * .8);
         gridPane.setMaxSize(this.quest.game.stage.getWidth() * .8, this.quest.game.stage.getHeight() * .8);
 
-        for (int i = 0; i < this.quest.getDifficulty().tileCount; i++) {
-            for (int j = 0; j < this.quest.getDifficulty().tileCount; j++) {
-                gridPane.add(this.tiles[j + this.quest.getDifficulty().tileCount * i].render(), j, i);
+        for (int x = 0; x < this.quest.getDifficulty().xTileCount; x++) {
+            for (int y = 0; y < this.quest.getDifficulty().yTileCount; y++) {
+                gridPane.add(this.tiles[x][y].render(), x, y);
             }
         }
 
@@ -276,6 +257,18 @@ public class Galaxy {
         });
 
         this.vBox.getChildren().add(button);
+    }
+
+    private Tile randomTile() {
+        int randomX = Game.RandomInt(0, this.quest.getDifficulty().xTileCount);
+        int randomY = Game.RandomInt(0, this.quest.getDifficulty().yTileCount);
+
+        while (!this.tiles[randomX][randomY].isAvailable()) {
+            randomX = Game.RandomInt(0, this.quest.getDifficulty().xTileCount);
+            randomY = Game.RandomInt(0, this.quest.getDifficulty().yTileCount);
+        }
+
+        return this.tiles[randomX][randomY];
     }
 
     public Scene getScene() {

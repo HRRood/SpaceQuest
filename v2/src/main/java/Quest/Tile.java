@@ -66,11 +66,11 @@ public class Tile {
     }
 
     private double computeWidth(double multiplier) {
-        return (this.quest.game.stage.getWidth() * multiplier) / this.quest.getDifficulty().tileCount;
+        return (this.quest.game.stage.getWidth() * multiplier) / this.quest.getDifficulty().xTileCount;
     }
 
     private double computeHeight(double multiplier) {
-        return (this.quest.game.stage.getHeight() * multiplier) / this.quest.getDifficulty().tileCount;
+        return (this.quest.game.stage.getHeight() * multiplier) / this.quest.getDifficulty().yTileCount;
     }
 
     private Background backgroundFromImage(Image image) {
