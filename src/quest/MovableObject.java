@@ -3,19 +3,45 @@ package quest;
 import javafx.scene.image.Image;
 import java.util.List;
 
+/**
+ * MovableObject Class.
+ * the Parent class for all movable object in the game.
+ * it is a child of the Object Class.
+ */
 public class MovableObject extends Object {
 
     private String direction;
 
+    /**
+     * MovableObject class constructor.
+     * Sets up a movable object with an direction.
+     *
+     * @param sprite
+     * @param tile
+     * @param direction
+     */
     public MovableObject(Image sprite, Tile tile, String direction) {
         super(sprite, tile);
         this.direction = direction;
     }
 
+    /**
+     * MovableObject class constructor.
+     * Sets up a movable object with an direction.
+     *
+     * @param sprite
+     * @param tile
+     */
     public MovableObject(Image sprite, Tile tile) {
         super(sprite, tile);
     }
 
+    /**
+     * GetDirection.
+     * return a int for the rotation direction.
+     *
+     * @return
+     */
     public int getDirection() {
         if (direction == null) {
             return 0;
@@ -36,6 +62,17 @@ public class MovableObject extends Object {
         }
     }
 
+    /**
+     * moveObject.
+     * Move the object to a desired direction.
+     * get the tile of the object and the direction it wants to go to.
+     * check if the tile in the direction available is.
+     * if it is not check what on the tile.
+     * if the object on the tile compable is witht this object
+     * Move to it, else don't.
+     *
+     * @param move_to
+     */
     public void moveObject(String move_to) {
         Tile object_tile = getTile();
         Object collided = null;
@@ -109,6 +146,14 @@ public class MovableObject extends Object {
         }
     }
 
+    /**
+     * getCollision.
+     * check which object is on the desired tile to move to.
+     * return the object on the tile else return null.
+     *
+     * @param go_to_tile
+     * @return
+     */
     public Object getCollision (Tile go_to_tile) {
         Object[] go_to_tile_object = go_to_tile.getObject();
 
