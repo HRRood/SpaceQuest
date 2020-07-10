@@ -55,10 +55,10 @@ public class Galaxy {
 
         for (int x = 0; x < this.quest.getDifficulty().xTileCount; x++) {
             for (int y = 0; y < this.quest.getDifficulty().yTileCount; y++) {
-                this.tiles[x][y].neighbours.top = (y - 1) >= 0 ?  tiles[x][y-1] : null;
-                this.tiles[x][y].neighbours.right = (x + 1) < this.quest.getDifficulty().xTileCount ? tiles[x+1][y] : null;
-                this.tiles[x][y].neighbours.bottom = (y + 1) < this.quest.getDifficulty().yTileCount ?  tiles[x][y+1] : null;
-                this.tiles[x][y].neighbours.left = (x - 1) >= 0 ?  tiles[x-1][y] : null;
+                this.tiles[x][y].neighbours.top = (x - 1) >= 0 ?  tiles[x-1][y] : null;
+                this.tiles[x][y].neighbours.right = (y + 1) < this.quest.getDifficulty().yTileCount ?  tiles[x][y+1] : null;
+                this.tiles[x][y].neighbours.bottom = (x + 1) < this.quest.getDifficulty().xTileCount ? tiles[x+1][y] : null;
+                this.tiles[x][y].neighbours.left = (y - 1) >= 0 ?  tiles[x][y-1] : null;
             }
         }
     }
@@ -140,18 +140,6 @@ public class Galaxy {
                     break;
             }
 
-//            for (Comet comet : comets) {
-//                if (comet.MoveRandomOK() == CollusionType.SPACESHIP) {
-//                    quest.defeat = true;
-//                }
-//            }
-//
-//            for (SpacePirate spacePirate : spacePirates) {
-//                if (spacePirate.MoveRandomOK() == CollusionType.SPACESHIP) {
-//                    quest.defeat = true;
-//                }
-//            }
-
             if (this.wormhole == null) {
                 int planetsVisited = 0;
                 for (Planet planet : this.planets) {
@@ -187,7 +175,7 @@ public class Galaxy {
 
         for (int x = 0; x < this.quest.getDifficulty().xTileCount; x++) {
             for (int y = 0; y < this.quest.getDifficulty().yTileCount; y++) {
-                gridPane.add(this.tiles[x][y].render(), x, y);
+                gridPane.add(this.tiles[x][y].render(), y, x);
             }
         }
 
@@ -229,7 +217,7 @@ public class Galaxy {
                         return;
                     }
 
-                    quest.score--;
+                    quest.score++;
 
                     update();
                 });
