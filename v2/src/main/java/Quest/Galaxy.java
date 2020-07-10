@@ -194,7 +194,7 @@ public class Galaxy {
                         return;
                     }
 
-                    if (quest.score == 0) {
+                    if (quest.score == 300) {
                         quest.defeat = true;
                     }
 
@@ -248,12 +248,12 @@ public class Galaxy {
     }
 
     private Tile randomTile() {
-        int randomX = Game.RandomInt(0, this.quest.getDifficulty().xTileCount);
-        int randomY = Game.RandomInt(0, this.quest.getDifficulty().yTileCount);
+        int randomX = Game.RandomInt(2, this.quest.getDifficulty().xTileCount);
+        int randomY = Game.RandomInt(2, this.quest.getDifficulty().yTileCount);
 
         while (!this.tiles[randomX][randomY].isAvailable()) {
-            randomX = Game.RandomInt(0, this.quest.getDifficulty().xTileCount);
-            randomY = Game.RandomInt(0, this.quest.getDifficulty().yTileCount);
+            randomX = Game.RandomInt(2, this.quest.getDifficulty().xTileCount);
+            randomY = Game.RandomInt(2, this.quest.getDifficulty().yTileCount);
         }
 
         return this.tiles[randomX][randomY];
