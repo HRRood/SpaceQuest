@@ -136,13 +136,15 @@ public class MovableObject extends Object {
 
             if (collided instanceof Planet) {
                 ((Planet) collided).setVisited();
+                this.direction = move_to;
             }
 
             if (collided instanceof Wormhole) {
                 Game.game_won = true;
             }
+        } else {
+            this.direction = move_to;
         }
-        this.direction = move_to;
     }
 
     /**
