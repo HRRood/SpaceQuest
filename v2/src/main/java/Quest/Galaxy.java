@@ -40,7 +40,7 @@ public class Galaxy {
 
         this.scene = this.render();
 
-        // this.run();
+        this.run();
     }
 
     private void generateTiles() {
@@ -159,12 +159,12 @@ public class Galaxy {
                     break;
             }
 
-            for (Comet comet : comets) {
-                if (comet.MoveRandomOK() == CollusionType.SPACESHIP) {
-                    quest.defeat = true;
-                }
-            }
-
+//            for (Comet comet : comets) {
+//                if (comet.MoveRandomOK() == CollusionType.SPACESHIP) {
+//                    quest.defeat = true;
+//                }
+//            }
+//
 //            for (SpacePirate spacePirate : spacePirates) {
 //                if (spacePirate.MoveRandomOK() == CollusionType.SPACESHIP) {
 //                    quest.defeat = true;

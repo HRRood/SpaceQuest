@@ -21,6 +21,7 @@ public class Quest {
         this.game = game;
         this.difficulty = difficulty;
         this.playerName = playerName;
+        this.score = difficulty.timeCount;
 
         this.galaxy = new Galaxy(this);
     }

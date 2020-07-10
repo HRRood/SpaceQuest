@@ -15,19 +15,13 @@ public class AutomatedObject extends MovableObject {
     }
 
     public CollusionType MoveRandomOK() {
-        Direction direction = Direction.values()[Game.RandomInt(0, 3)];
+        Direction direction = Direction.values()[Game.RandomInt(0, 4)];
 
-        while (true) {
-
-            Tile tile = this.tile.getNeighbourFromDirection(direction);
-
-            if (tile == null) {
-                direction = Direction.values()[Game.RandomInt(0, 3)];
-            } else if (!tile.isAvailable()) {
-                direction = Direction.values()[Game.RandomInt(0, 3)];
-            } else {
-                break;
-            }
+        while (
+                this.tile.getNeighbourFromDirection(direction) != null 
+                && !this.tile.getNeighbourFromDirection(direction).isAvailable()
+        ) {
+            direction = Direction.values()[Game.RandomInt(0, 4)];
         }
 
         return this.moveObjectOK(direction);
