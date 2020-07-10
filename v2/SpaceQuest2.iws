@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b50e2fb9-0050-47d5-97fa-dbdb1a3a2b4b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/SpaceQuest2.iws" beforeDir="false" afterPath="$PROJECT_DIR$/SpaceQuest2.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SpaceQuest2/main/java/Quest/Galaxy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Quest/Galaxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Quest/Galaxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Quest/Object/AutomatedObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Quest/Object/AutomatedObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Quest/Object/CollusionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Quest/Object/CollusionType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Quest/Object/MovableObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Quest/Object/MovableObject.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1eOKsLFmDZvUr0RPnjw4Ipfm8G5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="restartRequiresConfirmation" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/img" />
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="main.java.Quest.Object" />
+      <recent name="main.java.Quest" />
+      <recent name="main.java.Game" />
+      <recent name="main.java.Game.Object" />
+      <recent name="main.java.GameObjects" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/font" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.java.Game.Game" />
+      <module name="SpaceQuest2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.java.Game.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.java.Main" />
+      <module name="SpaceQuest2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Java Scratch">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <option name="SCRATCH_FILE_URL" value="file://$PROJECT_DIR$/src/Main.java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b50e2fb9-0050-47d5-97fa-dbdb1a3a2b4b" name="Default Changelist" comment="" />
+      <created>1594187404554</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1594187404554</updated>
+      <workItem from="1594187408723" duration="21310000" />
+      <workItem from="1594242670367" duration="4237000" />
+      <workItem from="1594279995799" duration="38601000" />
+      <workItem from="1594398038028" duration="3685000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594187580030">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.800@0.0.1280.800" timestamp="1594187580030" />
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1594400461633">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1594400461633" />
+    <state x="297" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1594399240891">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="297" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.800@0.0.1280.800" timestamp="1594399240891" />
+    <state width="1238" height="212" key="GridCell.Tab.0.bottom" timestamp="1594401859027">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1238" height="212" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1594401859027" />
+    <state width="1238" height="212" key="GridCell.Tab.0.bottom/0.23.1280.777@0.23.1280.777" timestamp="1594331019141" />
+    <state width="1238" height="212" key="GridCell.Tab.0.center" timestamp="1594401859026">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1238" height="212" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1594401859026" />
+    <state width="1238" height="212" key="GridCell.Tab.0.center/0.23.1280.777@0.23.1280.777" timestamp="1594331019139" />
+    <state width="1238" height="212" key="GridCell.Tab.0.left" timestamp="1594401859025">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1238" height="212" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1594401859025" />
+    <state width="1238" height="212" key="GridCell.Tab.0.left/0.23.1280.777@0.23.1280.777" timestamp="1594331019137" />
+    <state width="1238" height="212" key="GridCell.Tab.0.right" timestamp="1594401859026">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1238" height="212" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1594401859026" />
+    <state width="1238" height="212" key="GridCell.Tab.0.right/0.23.1280.777@0.23.1280.777" timestamp="1594331019140" />
+    <state x="340" y="157" width="600" height="538" key="find.popup" timestamp="1594398488487">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="340" y="157" width="600" height="538" key="find.popup/0.0.1280.800@0.0.1280.800" timestamp="1594398488487" />
+    <state x="345" y="183" key="refactoring.ChangeSignatureDialog" timestamp="1594291849786">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="345" y="183" key="refactoring.ChangeSignatureDialog/0.0.1280.800@0.0.1280.800" timestamp="1594291849786" />
+  </component>
+</project>
