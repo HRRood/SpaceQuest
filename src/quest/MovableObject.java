@@ -104,8 +104,9 @@ public class MovableObject extends Object {
             if (collided instanceof Wormhole) {
                 Game.game_won = true;
             }
+        } else {
+            this.direction = move_to;
         }
-        this.direction = move_to;
     }
 
     public Object getCollision (Tile go_to_tile) {

@@ -8,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,15 +241,14 @@ public class Game {
     public void setupGameOverMenu() {
         this.go_menu.setVisible(true);
 
-        //announce label.
-        Label background = new Label();
-        background.setStyle(" -fx-background-color: green;");
-        background.setMinWidth(this.game.getWidth() / 3);
-        background.setMinHeight(this.game.getHeight() / 3);
-        background.setLayoutX(this.game.getWidth() / 3);
-        background.setLayoutY(this.game.getHeight() / 3);
+        Rectangle container = new Rectangle();
+        container.setWidth(this.game.getWidth() / 2);
+        container.setHeight(this.game.getHeight() / 2);
+        container.setArcWidth(20);
+        container.setArcHeight(20);
+        container.setFill(Color.GRAY);
+        container.relocate((this.game.getWidth() / 2) - (container.getWidth() / 2), (this.game.getHeight() / 2) - container.getHeight() / 2);
 
-        //result label.
         String result_text = "";
 
         if(game_over) {
@@ -255,29 +257,29 @@ public class Game {
             result_text = "GAME WON";
         }
 
-        Label result = new Label(result_text);
-        result.setFont(Main.FONT_40);
-        result.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        result.setLayoutY(background.getLayoutY());
+        Text result = new Text(result_text);
+        result.setFont(Main.FONT_130);
+        result.relocate((container.getWidth()) - result.getLayoutBounds().getWidth() * 0.5, container.getLayoutY() + 100);
 
-        //Score label.
-        String score_text = "Your score: " + this.score;
-        Label score = new Label(score_text);
-        score.setFont(Main.FONT_20);
-        score.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        score.setLayoutY(background.getLayoutY() + (background.getMinHeight() / 2));
+        String score_text = "Score does not count";
+        if (game_won) {
+            score_text = "Your score: " + this.score;
+        }
+        Text score = new Text(score_text);
+        score.setFont(Main.FONT_40);
+        score.relocate((container.getWidth()) - score.getLayoutBounds().getWidth() * 0.5, container.getLayoutY() + 200);
 
         Button home_button = new Button("Main Menu");
         home_button.setFont(Main.FONT_20);
-        home_button.setMinSize(background.getMinWidth() * 0.2, background.getMinHeight() * 0.1);
-        home_button.setLayoutX(background.getLayoutX() + (background.getMinWidth() / 3));
-        home_button.setLayoutY(background.getLayoutX());
+        home_button.setMinSize(container.getWidth() * 0.2, container.getHeight() * 0.1);
+        home_button.relocate((container.getWidth()) - (home_button.getMinWidth() * 0.5), container.getLayoutY() + container.getHeight() - 100);
+
         home_button.setOnAction(e -> {
             this.reset();
             main.gotoMenu();
         });
 
-        this.go_menu.getChildren().addAll(background, result, score, home_button);
+        this.go_menu.getChildren().addAll(container, result, score, home_button);
     }
 
     private void reset() {
