@@ -1,7 +1,6 @@
 package main.java.Quest;
 
 import javafx.scene.Scene;
-import main.java.Game.DifficultyView;
 import main.java.Game.Difficulty;
 import main.java.Game.Game;
 
